@@ -41,15 +41,24 @@ client.on('ready', function() {
 client.on('error', function(err) {
     console.log(err);
 });
+```
 
+### Programmatically (using Capabilities-based interface)
 
+```js
+var BitPay  = require('bitpay-api');
+var privkey = fs.readFileSync('path/to/private.key');
+var client  = new BitPay(privkey);
+
+// listen for client ready
 client.on('ready', function() {
     // get a list of invoices
     var merchant = client.merchant;
     merchant.getInvoices(function(err, invoices) {
+        // get refunds for the first invoice
         var invoice = invoices[0];
         invoice.getRefunds(function(err, refunds) {
-            
+            console.log(refunds);
         });
     });
 });
