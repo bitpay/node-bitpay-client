@@ -1,4 +1,5 @@
 {
-  "apiHost": "bitpay.com",
-  "apiPort": 443
+  "apiHost": "gordon.bp",
+  "apiPort": 8088,
+  "forceSSL": true
 }

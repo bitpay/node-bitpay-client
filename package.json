@@ -27,7 +27,8 @@
   "dependencies": {
     "request": "^2.34.0",
     "read": "^1.0.5",
-    "soop": "^0.1.5"
+    "soop": "^0.1.5",
+    "bitcore": "^0.1.11"
   },
   "analyze": false,
   "license": "MIT",
