@@ -1,0 +1,37 @@
+{
+  "name": "bitpay-rest-client",
+  "preferGlobal": false,
+  "version": "0.1.0",
+  "author": "",
+  "description": "",
+  "contributors": [
+    {
+      "name": "",
+      "email": ""
+    }
+  ],
+  "bin": {
+    "bitpay-rest": "./bin/bitpay-rest.js"
+  },
+  "scripts": {},
+  "main": "./lib/rest-client.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bitpay/nodejs-rest-client.git"
+  },
+  "keywords": [
+    "bitpay",
+    "rest",
+    "api"
+  ],
+  "dependencies": {
+    "request": "^2.34.0",
+    "read": "^1.0.5",
+    "soop": "^0.1.5"
+  },
+  "analyze": false,
+  "license": "MIT",
+  "engines": {
+    "node": ">=0.8"
+  }
+}
