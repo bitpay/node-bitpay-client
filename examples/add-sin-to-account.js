@@ -4,26 +4,31 @@ var HOME       = process.env['HOME'];
 var BitPay     = require('../lib/rest-client');
 var encPrivkey = fs.readFileSync(HOME + '/.bp/api.key').toString();
 var privkey    = KeyUtils.decrypt('', encPrivkey);
-var client     = new BitPay(privkey);
 
-client.on('ready', function() {
+var client = new BitPay(privkey, { 
+  getTokens: false,
+  signRequests: false 
+});
 
-  hashPassword('bitpay', function(err, hash) {
+hashPassword('bitpay', function(err, hash) {
 
-    var data = {
-      email: 'gordon@bitpay.com',
-      sin: KeyUtils.getSin(privkey),
-      hashedPassword: hash
-    };
+  var data = {
+    email: 'gordon@bitpay.com',
+    sin: KeyUtils.getSin(privkey),
+    hashedPassword: hash
+  };
 
-    console.log(data);
+  console.log(data);
 
-    client.as('public').post('sins', data, function(err, data) {
-      console.log(err || data);
-    });
-
+  client.as('public').post('sins', data, function(err, data) {
+    console.log(err || data);
   });
 
+});
+
+
+client.on('error', function(err) {
+  console.log(err);
 });
 
 function hashPassword(password, callback) {
