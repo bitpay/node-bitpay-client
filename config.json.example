@@ -1,0 +1,6 @@
+{
+    "apiHost": "bitpay.com",
+    "apiPort": 80,
+    "forceSSL": true,
+    "keyPassword": ""
+}
