@@ -9,7 +9,7 @@ var client     = new BitPay(privkey);
 client.on('ready', function() {
 
   client.get('invoices', function(err, data) {
-    console.log(err || invoices)
+    console.log(err || data)
   });
 
 });

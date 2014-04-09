@@ -6,16 +6,11 @@ var encPrivkey = fs.readFileSync(HOME + '/.bp/api.key').toString();
 var privkey    = KeyUtils.decrypt('', encPrivkey);
 var client     = new BitPay(privkey);
 
-var data = {
-  price: 100,
-  currency: 'USD'
-};
-
 client.on('ready', function() {
-
-  client.post('invoices', data, function(err, invoice) {
-    console.log(err || invoice);
-
+  client.get('invoices/6sGCDUhxyuXza1N3YY6LwU', function(err, invoice) {
+    console.log(invoice);
+    invoice.get('tx-requests', function(err, txs) {
+      console.log(err || txs)
+    });
   });
-
 });

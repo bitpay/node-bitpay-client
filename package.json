@@ -29,7 +29,8 @@
     "read": "^1.0.5",
     "soop": "^0.1.5",
     "bitcore": "^0.1.11",
-    "extend": "^1.2.1"
+    "extend": "^1.2.1",
+    "async": "^0.7.0"
   },
   "analyze": false,
   "license": "MIT",
