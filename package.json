@@ -1,23 +1,29 @@
 {
-  "name": "bitpay-rest-client",
+  "name": "bitpay-api",
   "preferGlobal": false,
   "version": "0.1.0",
-  "author": "",
+  "author": "Gordon Hall <gordon@bitpay.com>",
   "description": "",
   "contributors": [
     {
-      "name": "",
-      "email": ""
+      "name": "Patrick Nagurny",
+      "email": "patrick@bitpay.com"
+    },
+    {
+      "name": "Eric Martindale",
+      "email": "eric@bitpay.com"
+    },
+    {
+      "name": "Rob Riddle",
+      "email": "rob@bitpay.com"
     }
   ],
-  "bin": {
-    "bitpay-rest": "./bin/bitpay-rest.js"
-  },
+  "bin": {},
   "scripts": {},
   "main": "./lib/rest-client.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitpay/nodejs-rest-client.git"
+    "url": "https://github.com/bitpay/node-bitpay-api.git"
   },
   "keywords": [
     "bitpay",
@@ -30,7 +36,8 @@
     "soop": "^0.1.5",
     "bitcore": "^0.1.11",
     "extend": "^1.2.1",
-    "async": "^0.7.0"
+    "async": "^0.7.0",
+    "clarinet": "^0.8.1"
   },
   "analyze": false,
   "license": "MIT",

@@ -2,7 +2,7 @@ var fs         = require('fs');
 var KeyUtils   = require('../lib/key-utils');
 var HOME       = process.env['HOME'];
 var keypath    = HOME + '/.bp/api.key';
-var config     = require('../config')
+var config     = require('../config');
 var stdin      = process.stdin;
 
 console.log('--------');
