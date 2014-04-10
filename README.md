@@ -60,17 +60,20 @@ client.as('payroll').get('payouts', { status: 'new' }, function(err, payouts) {
 All of the `client` methods return a `Stream`, which you may use for more custom implementations. Here is a very rudimentary example using [Clarinet](https://github.com/dscape/clarinet), a streaming JSON parser.
 
 ```js
-var parser = require('clarinet').createStream();
-var count  = 0;
+var parser     = require('clarinet').createStream();
+var count      = 0;
 
-parser.on('openobject', function() {
-    parser.once('closeobject', function() {
-        count++;
+parser.on('key', function(key) {
+  if (key === 'id') {
+    parser.once('value', function(val) {
+      count++;
+      console.log('Got invoice: ' + val);
     });
+  }
 });
 
 parser.on('end', function() {
-    console.log('Streamed ' + count + ' invoices!');
+  console.log('Streamed ' + count + ' invoices!');
 });
 
 client.get('invoices').pipe(parser);

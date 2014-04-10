@@ -18,9 +18,7 @@
       "email": "rob@bitpay.com"
     }
   ],
-  "bin": {
-    
-  },
+  "bin": {},
   "scripts": {},
   "main": "./lib/rest-client.js",
   "repository": {
@@ -38,7 +36,8 @@
     "soop": "^0.1.5",
     "bitcore": "^0.1.11",
     "extend": "^1.2.1",
-    "async": "^0.7.0"
+    "async": "^0.7.0",
+    "clarinet": "^0.8.1"
   },
   "analyze": false,
   "license": "MIT",
