@@ -8,9 +8,13 @@ var config     = require('../config');
 var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
 
-client.on('ready', function() {
+if (process.argv.length < 3) {
+  console.log("Usage get-payout-by-id.js [payoutID]");
+  return;
+}
 
-  client.as('payroll').get('payouts/CDpiwsLZkSYy3NMZoNH9SP', function(err, request) {
+client.on('ready', function() {
+  client.as('payroll').get('payouts/' + process.argv[2], function(err, request) {
     console.log(err || request);
   });
 
