@@ -11,9 +11,8 @@ client.on('ready', function() {
 
   client.get('invoices', function(err, data) {
     var invoice = data[0];
-
     invoice.get('refunds', function(err, data) {
-      console.log(err, data);
+      console.log(err || data);
     });
   });
 
