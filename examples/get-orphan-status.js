@@ -8,17 +8,15 @@ var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
 
 if (process.argv.length < 3) {
-  console.log("Usage accept-overpayment.js [invoiceID]");
+  console.log("Usage: get-payout-request.js [invoiceID]");
   return;
 }
 
 client.on('ready', function() {
-
   client.get('invoices/' + process.argv[2], function(err, invoice) {
-    if (!invoice) return console.log('Invoice not found.');
-    invoice.post('adjustments', { type: 'acceptOverPayment' }, function(err, result) {
-      console.log(err || result);
+    if(err) console.log(err);
+    invoice.get('orphans', function(err, txs) {
+      console.log(err || txs)
     });
   });
-
 });
