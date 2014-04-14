@@ -7,17 +7,17 @@ var config     = require('../config');
 var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
 
-var data = {
-  price: 100,
-  currency: 'USD',
-  notificationURL: 'http://gordon.bp:8989'
-};
+if (process.argv.length < 3) {
+  console.log("Usage: get-invoice-by-id.js [invoiceID]");
+  return;
+}
 
 client.on('ready', function() {
 
-  client.post('invoices', data, function(err, invoice) {
-    console.log(err || invoice);
-
+  client.get('invoices/' + process.argv[2], function(err, invoice) {
+    invoice.post('notifications', function(err, msg) {
+      console.log(err || msg);
+    });    
   });
 
 });
