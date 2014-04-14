@@ -1,5 +1,5 @@
 {
-  "name": "bitpay-api",
+  "name": "bitpay",
   "preferGlobal": false,
   "version": "0.1.0",
   "author": "Gordon Hall <gordon@bitpay.com>",
