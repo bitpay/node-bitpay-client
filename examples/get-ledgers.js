@@ -9,7 +9,14 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.get('ledgers', { currency: 'USD' }, function(err, data) {
+  var today      = new Date().getTime();
+  var oneWeekAgo = new Date(today - 1000 * 60 * 60 * 24 * 7).getTime();
+
+  client.get('ledger-entries', { 
+    currency: 'BTC',
+    startDate: oneWeekAgo,
+    endDate: today
+  }, function(err, data) {
     console.log(err || data)
   });
 
