@@ -10,7 +10,7 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.get('keys', function(err, sins) {
+  client.as('user').get('keys', function(err, sins) {
     console.log(err || sins);
   });
 
