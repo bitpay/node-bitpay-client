@@ -1,4 +1,5 @@
 var fs         = require('fs');
+var async      = require('async');
 var KeyUtils   = require('../lib/key-utils');
 var HOME       = process.env['HOME'];
 var BitPay     = require('../lib/rest-client');
@@ -9,8 +10,12 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.as('user').get('user', function(err, data) {
-    console.log(err || data);
+  client.get('keys', function(err, sins) {
+    // invalidate the oldest sin
+    var sin = sins[sins.length - 1];
+    sin.delete(function(err, result) {
+      console.log(err || result);
+    });
   });
 
 });

@@ -9,8 +9,14 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.as('user').get('user', function(err, data) {
-    console.log(err || data);
+  client.as('user').get('user', function(err, user) {
+    console.log(user)
+    user.put({
+      contactPhone: '123-456-7890',
+      contactName: 'Satoshi Nakamoto'
+    }, function(err, user) {
+      console.log(err || user);
+    });
   });
 
 });

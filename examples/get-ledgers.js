@@ -6,10 +6,14 @@ var encPrivkey = fs.readFileSync(HOME + '/.bp/api.key').toString();
 var config     = require('../config');
 var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
+var async      = require('async');
 
 client.on('ready', function() {
 
-  client.as('user').get('user', function(err, data) {
+  var today      = new Date().getTime();
+  var oneWeekAgo = new Date(today - 1000 * 60 * 60 * 24 * 7).getTime();
+
+  client.get('ledgers', function(err, data) {
     console.log(err || data);
   });
 

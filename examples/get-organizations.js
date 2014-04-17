@@ -9,7 +9,7 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.get('orgs', function(err, data) {
+  client.as('user').get('orgs', function(err, data) {
     console.log(err || data);
   });
 

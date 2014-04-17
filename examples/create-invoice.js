@@ -9,14 +9,14 @@ var client     = new BitPay(privkey);
 
 var data = {
   price: 100,
-  currency: 'USD'
+  currency: 'USD',
+  notificationURL: 'http://your-ipn-server'
 };
 
 client.on('ready', function() {
 
   client.post('invoices', data, function(err, invoice) {
     console.log(err || invoice);
-
   });
 
 });

@@ -16,7 +16,8 @@ hashPassword('bitpay', function(err, hash) {
   var data = {
     email: 'gordon@bitpay.com',
     sin: KeyUtils.getSin(privkey),
-    hashedPassword: hash
+    hashedPassword: hash,
+    label: 'my nodejs app'
   };
 
   console.log(data);
