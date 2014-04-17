@@ -10,7 +10,7 @@ var client     = new BitPay(privkey);
 var data = {
   price: 100,
   currency: 'USD',
-  notificationURL: 'http://gordon.bp:8989'
+  notificationURL: 'http://your-ipn-server'
 };
 
 client.on('ready', function() {

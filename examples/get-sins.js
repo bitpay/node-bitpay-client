@@ -15,7 +15,3 @@ client.on('ready', function() {
   });
 
 });
-
-
-
-
