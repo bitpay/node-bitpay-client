@@ -17,7 +17,6 @@ client.on('ready', function() {
 
   client.post('invoices', data, function(err, invoice) {
     console.log(err || invoice);
-
   });
 
 });
