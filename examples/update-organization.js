@@ -11,12 +11,12 @@ client.on('ready', function() {
 
   var updateData = {
     smsNumber: '555-555-5555',
-    merchantName: 'Bill Merchant',
-    merchantAddress1: '1234 Merchant Ave',
-    merchantAddress2: '',
-    merchantCity: 'Merchantville',
-    merchantState: 'NJ',
-    merchantZip: '08033',
+    name: 'Bill Merchant',
+    address1: '1234 Merchant Ave',
+    address2: '',
+    city: 'Merchantville',
+    state: 'NJ',
+    zip: '08033',
     cartPOSsoftware: 'Aloha',
     pricingCurrency: 'USD',
     payoutCurrency: 'BTC',
