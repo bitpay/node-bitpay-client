@@ -14,7 +14,7 @@ client.on('ready', function() {
     console.log(bill);
     bill.put({ 
       status: 'ready', 
-      buyerEmail: 'gordon@bitpay.com' 
+      email: 'gordon@bitpay.com' 
     }, function(err, bill) {
       console.log(err || bill);
     });
