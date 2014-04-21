@@ -9,7 +9,13 @@ var client     = new BitPay(privkey);
 
 client.on('ready', function() {
 
-  client.get('invoices', function(err, data) {
+  var today      = new Date().getTime();
+  var oneWeekAgo = new Date(today - 1000 * 60 * 60 * 24 * 7).getTime();
+
+  client.get('invoices', { 
+    dateStart: oneWeekAgo, 
+    dateEnd: today 
+  }, function(err, data) {
     console.log(err || data)
   });
 
