@@ -15,3 +15,7 @@ client.on('ready', function() {
   });
 
 });
+
+client.on('error', function(err) {
+  console.log(err);
+});
