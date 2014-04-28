@@ -3,9 +3,7 @@ var BitPay     = require('../lib/rest-client');
 var client     = new BitPay();
 
 describe('Public API', function(){
-
   var bitpay = client.as('public');
-
   describe('get rates', function(){
     it('should serve a list of rates', function(done){
       bitpay.get('rates', done );
@@ -41,9 +39,6 @@ describe('Public API', function(){
       }, done );
     });
   }); /**/
-
-  
-
   describe('create application', function() {
     it('should successfully create an application', function(done) {
 
@@ -64,6 +59,4 @@ describe('Public API', function(){
       bitpay.post( 'applications' , data , done );
     });
   });
-
-
 });
