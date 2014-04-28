@@ -8,7 +8,7 @@ A Node.js module and command line client for interacting with [BitPay's Cryptogr
 Install using [Node Package Manager](https://www.npmjs.org/).
 
 ```
-~# npm install bitpay-api
+~# npm install bitpay
 ```
 
 ## Usage
@@ -16,7 +16,7 @@ Install using [Node Package Manager](https://www.npmjs.org/).
 Require the BitPay API and create a client instance using your private key.
 
 ```js
-var BitPay  = require('bitpay-api');
+var BitPay  = require('bitpay');
 var privkey = fs.readFileSync('path/to/private.key');
 var client  = new BitPay(privkey);
 ```
