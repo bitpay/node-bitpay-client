@@ -19,7 +19,9 @@
     }
   ],
   "bin": {},
-  "scripts": {},
+  "scripts": {
+    "test": "mocha"
+  },
   "main": "./lib/rest-client.js",
   "repository": {
     "type": "git",
