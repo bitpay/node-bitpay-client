@@ -1,7 +1,9 @@
 BitPay Node.js API Client
 ==========================
 
-A Node.js module and command line client for interacting with [BitPay's Cryptographically Secure API](https://bitpay.com/api).
+A Node.js module and command line client for interacting with [BitPay's Cryptographically Secure API](https://test.bitpay.com/api).
+
+> Note: This API is currently only available in our *test* environment (test.bitpay.com) and is not yet ready for production.
 
 ## Getting Started
 
