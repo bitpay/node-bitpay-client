@@ -57,7 +57,7 @@ function savePassword(canceled, text) {
   console.log(sin);
   console.log('Encrypted private key: ' + encPrivKey);
 
-// prevent overwriting of existing keys after multiple executions.
+  // prevent overwriting of existing keys after multiple executions.
   if (fs.existsSync( keypath )) {
     var hash = require('crypto').createHash('sha1').update( fs.readFileSync( keypath ) );
     fs.renameSync( keypath , HOME + '/.bp/api.' + hash.digest('hex').substring(0, 5) + '.key' );
