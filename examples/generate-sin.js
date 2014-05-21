@@ -2,7 +2,7 @@ var fs         = require('fs');
 var KeyUtils   = require('../lib/key-utils');
 var HOME       = process.env['HOME'];
 var keypath    = HOME + '/.bp/api.key';
-var pubkeypath = HOME + '/./bp/api.pub';
+var pubkeypath = HOME + '/.bp/api.pub';
 var config     = require('../config');
 var stdin      = process.stdin;
 
@@ -65,8 +65,8 @@ function savePassword(canceled, text) {
   }
 
   if (fs.existsSync( pubkeypath )) {
-    var hash = require('crypto').createHash('sha1').update( fs.readFileSync( keypath ) );
-    fs.renameSync( keypath , HOME + '/.bp/api.' + hash.digest('hex').substring(0, 5) + '.pub' );
+    var hash = require('crypto').createHash('sha1').update( fs.readFileSync( pubkeypath ) );
+    fs.renameSync( pubkeypath , HOME + '/.bp/api.' + hash.digest('hex').substring(0, 5) + '.pub' );
   }
 
   fs.writeFileSync( keypath , encPrivKey);
