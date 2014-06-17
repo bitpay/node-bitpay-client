@@ -39,7 +39,8 @@
     "bitcore": "^0.1.11",
     "extend": "^1.2.1",
     "async": "^0.7.0",
-    "clarinet": "^0.8.1"
+    "clarinet": "^0.8.1",
+    "base58-native": "~0.1.4"
   },
   "analyze": false,
   "license": "MIT",
