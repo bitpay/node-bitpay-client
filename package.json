@@ -21,7 +21,7 @@
   "bin": {},
   "scripts": {
     "test": "mocha",
-    "postinstall": "cp config.example.json config.json"
+    "postinstall": "cp config.json.example config.json"
   },
   "main": "./lib/rest-client.js",
   "repository": {
