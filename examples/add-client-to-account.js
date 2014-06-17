@@ -10,10 +10,10 @@ var client = new BitPay();
 
 var data = {
   email: 'gordon@bitpay.com',
-  sin: KeyUtils.getSin(privkey),
+  id: KeyUtils.getSin(privkey),
   label: 'my nodejs app'
 };
 
-client.as('public').post('keys', data, function(err, data) {
+client.as('public').post('clients', data, function(err, data) {
   console.log(err || data);
 });
