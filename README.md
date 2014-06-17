@@ -43,6 +43,29 @@ client.get('invoices', function(err, invoices) {
 });
 ```
 
+### Overloading Configuration
+
+The BitPay client loads a configuration file from the root of the module. If you do not commit youu `node_modules` to source control, you will need to overload the `config` dependency from within your own code.
+This can be done easily using a tool like [Soop](https://github.com/gasteve/node-soop) or [Proxyquire](https://github.com/thlorenz/proxyquire).
+
+Example using Soop:
+
+```js
+var soop = require('soop');
+var BitPay = soop.load('bitpay', {
+  config: { /* ... */ }
+});
+```
+
+Example using Proxyquire:
+
+```js
+var proxyquire = require('proxyquire');
+var BitPay = proxyquire('bitpay', {
+  '../config': { /* ... */ }
+});
+```
+
 ### Assuming a Different Facade
 
 Some operations in the API are only available to certain "facades", which restrict access to different functionality. By default, all requests are sent using the **merchant** facade. To assume a different facade, you can use the `as()` method.
