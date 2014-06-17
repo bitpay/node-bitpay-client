@@ -45,7 +45,7 @@ client.get('invoices', function(err, invoices) {
 
 ### Overloading Configuration
 
-The BitPay client loads a configuration file from the root of the module. If you do not commit youu `node_modules` to source control, you will need to overload the `config` dependency from within your own code.
+The BitPay client loads a configuration file from the root of the module. If you do not commit your `node_modules` to source control, you will need to overload the `config` dependency from within your own code.
 This can be done easily using a tool like [Soop](https://github.com/gasteve/node-soop) or [Proxyquire](https://github.com/thlorenz/proxyquire).
 
 Example using Soop:
