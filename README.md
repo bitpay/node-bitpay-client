@@ -15,6 +15,30 @@ Install using [Node Package Manager](https://www.npmjs.org/).
 
 ## Usage
 
+### CLI
+
+Use the `bitpay` command line program to generate your client keys and associate them with your account.
+
+```
+~# cd bitpay && sudo npm link
+~# bitpay keygen
+~# bitpay login
+```
+
+For more information on how to use the CLI, run:
+
+```
+~# bitpay --help
+```
+
+You can check to make sure you have correctly set up your client keys by running:
+
+```
+~# bitpay whoami
+```
+
+### Module
+
 Require the BitPay API and create a client instance using your private key.
 
 ```js
