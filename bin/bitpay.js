@@ -64,7 +64,7 @@ bitpay
       email: bitpay.email,
       label: 'node-bitpay-client'
     }, function(err, result) {
-      if (err) return console.log('Error:', err);
+      if (err) return console.log('Error:', err.error);
       console.log('Key associated! Check your email to approve access.');
     });
   });
