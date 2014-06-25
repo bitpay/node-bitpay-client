@@ -1,7 +1,7 @@
 var fs         = require('fs');
-var KeyUtils   = require('../lib/key-utils');
+var bitauth    = require('bitauth');
 var HOME       = process.env['HOME'];
-var keypath    = HOME + '/.bp/api.key';
+var keypath    = HOME + '/.bitpay/api.key';
 var pubkeypath = HOME + '/.bp/api.pub';
 var config     = require('../config');
 var stdin      = process.stdin;
@@ -48,8 +48,8 @@ function savePassword(canceled, text) {
     process.exit();
   }
 
-  var sin        = KeyUtils.generateSin();
-  var encPrivKey = KeyUtils.encrypt(text, sin.priv);
+  var sin        = bitauth.generateSin();
+  var encPrivKey = bitauth.encrypt(text, sin.priv);
 
   config.keyPassword = text;
   fs.writeFileSync('../config.json', JSON.stringify(config, null, 4));

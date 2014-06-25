@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
-var isWin    = process.env.platform === 'win32';
-var HOME     = process.env[isWin ? 'USERPROFILE' : 'HOME'];
-var bitpay   = require('commander');
-var BitPay   = require('../lib/rest-client');
-var fs       = require('fs');
-var KeyUtils = require('../lib/key-utils');
+var isWin   = process.env.platform === 'win32';
+var HOME    = process.env[isWin ? 'USERPROFILE' : 'HOME'];
+var bitpay  = require('commander');
+var BitPay  = require('../lib/rest-client');
+var fs      = require('fs');
+var bitauth = require('bitauth');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -33,8 +33,8 @@ bitpay
     saveKeys();
 
     function saveKeys() {
-      var sin    = KeyUtils.generateSin();
-      var secret = KeyUtils.encrypt(bitpay.password, sin.priv);
+      var sin    = bitauth.generateSin();
+      var secret = bitauth.encrypt(bitpay.password, sin.priv);
       // write the files
       fs.writeFileSync(bitpay.output + '/api.key', secret);
       fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
@@ -60,7 +60,7 @@ bitpay
     });
     // associate key
     client.as('public').post('clients', {
-      id: KeyUtils.getSin(KeyUtils.decrypt(bitpay.password, secret)),
+      id: bitauth.getSin(bitauth.decrypt(bitpay.password, secret)),
       email: bitpay.email,
       label: 'node-bitpay-client'
     }, function(err, result) {
@@ -77,7 +77,7 @@ bitpay
       return console.log('Error:', 'Access key not found, did you run `bitpay login`?');
     }
     var sin    = fs.readFileSync(bitpay.input + '/api.pub').toString();
-    var secret = KeyUtils.decrypt(
+    var secret = bitauth.decrypt(
       bitpay.password,
       fs.readFileSync(bitpay.input + '/api.key').toString()
     );
@@ -111,7 +111,7 @@ bitpay
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay login`?');
     }
-    var secret = KeyUtils.decrypt(
+    var secret = bitauth.decrypt(
       bitpay.password,
       fs.readFileSync(bitpay.input + '/api.key').toString()
     );
