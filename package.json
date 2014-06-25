@@ -1,7 +1,7 @@
 {
   "name": "bitpay",
   "preferGlobal": false,
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "Gordon Hall <gordon@bitpay.com>",
   "description": "",
   "contributors": [
@@ -39,12 +39,12 @@
     "request": "^2.34.0",
     "read": "^1.0.5",
     "soop": "^0.1.5",
-    "bitcore": "^0.1.11",
     "extend": "^1.2.1",
     "async": "^0.7.0",
     "clarinet": "^0.8.1",
     "base58-native": "~0.1.4",
-    "commander": "^1.3.2"
+    "commander": "^1.3.2",
+    "bitauth": "git+https://github.com/bitpay/bitauth.git"
   },
   "analyze": false,
   "license": "MIT",

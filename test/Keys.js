@@ -4,9 +4,9 @@ var BitPay     = require('../lib/rest-client');
 
 var HOME       = process.env['HOME'];
 var config     = require('../config');
-var KeyUtils   = require('../lib/key-utils');
-var encPrivkey = fs.readFileSync(HOME + '/.bp/api.key').toString();
-var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
+var bitauth    = require('bitauth');
+var encPrivkey = fs.readFileSync(HOME + '/.bitpay/api.key').toString();
+var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
 
 var client     = new BitPay( privkey , {
   sticky: true
@@ -16,7 +16,7 @@ describe('Key API', function() {
 
   describe('add new key', function() {
     it('should create a new key', function(done) {
-      var sin = KeyUtils.generateSin();
+      var sin = bitauth.generateSin();
 
       bitpay.as('public').post('keys', {
           sin:   sin.sin
@@ -28,7 +28,7 @@ describe('Key API', function() {
 
   describe('approve added key', function() {
     it('should create and approve a key', function(done) {
-      var sin = KeyUtils.generateSin();
+      var sin = bitauth.generateSin();
 
       bitpay.as('public').post('keys', {
           sin:   sin.sin

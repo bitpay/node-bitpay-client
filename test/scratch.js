@@ -7,9 +7,9 @@ var BitPay = require('../lib/rest-client');
 
 var HOME       = process.env['HOME'];
 var config     = require('../config');
-var KeyUtils   = require('../lib/key-utils');
-var encPrivkey = fs.readFileSync(HOME + '/.bp/api.key').toString();
-var privkey    = KeyUtils.decrypt(config.keyPassword, encPrivkey);
+var bitauth    = require('bitauth');
+var encPrivkey = fs.readFileSync(HOME + '/.bitpay/api.key').toString();
+var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
 
 // TODO: enable strict SSL
 // TODO: enable 301 redirect following
@@ -26,7 +26,7 @@ var bitpay = new BitPay( privkey );
   email: 'eric@bitpay.com'
 }, done );/**/
 
-var sin = KeyUtils.generateSin();
+var sin = bitauth.generateSin();
 var testContext = require('crypto').createHash('sha1').update( sin.sin ).digest('hex');
 
 //var bitpay = new BitPay(  );
@@ -34,7 +34,7 @@ var testContext = require('crypto').createHash('sha1').update( sin.sin ).digest(
 async.series([
   /*/function(done) {
     bitpay.as('public').post('keys', {
-        sin:   KeyUtils.getSin( privkey )
+        sin:   bitauth.getSin( privkey )
       , email: 'eric@bitpay.com'
       , label: 'test-key-env'
     }, function(err, key) {
@@ -65,8 +65,8 @@ async.series([
   },
   function addNewKey(done) {
 
-    var KeyUtils = require('../lib/key-utils');
-    var sin = KeyUtils.generateSin();
+    var bitauth = require('bitauth');
+    var sin = bitauth.generateSin();
 
     bitpay.as('public').post('keys', {
         sin:   sin.sin
@@ -84,8 +84,8 @@ async.series([
     });
   },
   function approveAddedKey(done) {
-    var KeyUtils = require('../lib/key-utils');
-    var sin = KeyUtils.generateSin();
+    var bitauth = require('bitauth');
+    var sin = bitauth.generateSin();
 
     bitpay.as('public').post('keys', {
         sin:   sin.sin
