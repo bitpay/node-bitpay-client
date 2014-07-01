@@ -13,7 +13,7 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.0.1')
+  .version('0.0.2')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
   .option('-p, --password [password]', 'password for encrypting/decrypting your key', '')
