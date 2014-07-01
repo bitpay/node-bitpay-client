@@ -13,7 +13,7 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.0.1')
+  .version('0.0.2')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
   .option('-p, --password [password]', 'password for encrypting/decrypting your key', '')
@@ -52,7 +52,7 @@ bitpay
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
     }
-    var secret = fs.readFileSync(bitpay.input + '/api.key').toString();
+    var sin    = fs.readFileSync(bitpay.input + '/api.pub').toString();
     var client = new BitPay();
     // handle errors
     client.on('error', function(err) {
@@ -60,7 +60,7 @@ bitpay
     });
     // associate key
     client.as('public').post('clients', {
-      id: bitauth.getSin(bitauth.decrypt(bitpay.password, secret)),
+      id: sin,
       email: bitpay.email,
       label: 'node-bitpay-client'
     }, function(err, result) {
