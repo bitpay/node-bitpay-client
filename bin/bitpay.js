@@ -16,8 +16,7 @@ bitpay
   .version('0.0.2')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
-  .option('-p, --password [password]', 'password for encrypting/decrypting your key', '')
-  .option('-e, --email [email]', 'your bitpay email address');
+  .option('-p, --password [password]', 'password for encrypting/decrypting your key', '');
 
 bitpay
   .command('keygen')
@@ -45,8 +44,9 @@ bitpay
 bitpay
   .command('login')
   .description('associate client identity with your bitpay account')
-  .action(function() {
-    if (!bitpay.email) {
+  .option('-e, --email <email>', 'your bitpay email address')
+  .action(function(env) {
+    if (!env.email) {
       return console.log('Error:', 'You must supply your BitPay email address')
     }
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -61,7 +61,7 @@ bitpay
     // associate key
     client.as('public').post('clients', {
       id: sin,
-      email: bitpay.email,
+      email: env.email,
       label: 'node-bitpay-client'
     }, function(err, result) {
       if (err) return console.log('Error:', err.error);
