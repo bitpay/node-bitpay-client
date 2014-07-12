@@ -22,6 +22,10 @@ parser.on('end', function() {
   console.log('Streamed ' + count + ' invoices!');
 });
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
   client.get('invoices').pipe(parser);
 });

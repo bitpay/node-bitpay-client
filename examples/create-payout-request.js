@@ -32,6 +32,10 @@ var data = {
   ]
 };
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
 
   client.as('payroll').post('payouts', data, function(err, payoutrequest) {
