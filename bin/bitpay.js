@@ -24,9 +24,13 @@ bitpay
   .description('generate key pair to associate with account')
   .action(function() {
     if (fs.existsSync(bitpay.output + '/api.key') || fs.existsSync(bitpay.output + '/api.pub')) {
-      return bitpay.confirm('Keys already exist at ' + bitpay.output + '. Do you wish to overwrite them?', function(ok) {
-        if (ok) saveKeys();
-        else process.exit();
+      return bitpay.confirm('Keys already exist at ' + bitpay.output + '. Do you wish to overwrite them?\r', function(ok) {
+        if (ok) {
+          saveKeys()
+        } else {
+          console.log('Aborted.')
+          process.exit();
+        }
       });
     }
 
@@ -38,7 +42,8 @@ bitpay
       // write the files
       fs.writeFileSync(bitpay.output + '/api.key', secret);
       fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
-      console.log('Keys saved to:', bitpay.output);
+      console.log('Keys saved to:', bitpay.output, '\r');
+      process.exit()
     };
   });
 
@@ -47,7 +52,7 @@ bitpay
   .description('associate client identity with your bitpay account')
   .action(function() {
     if (!bitpay.email) {
-      return console.log('Error:', 'You must supply your BitPay email address')
+      return console.log('Error:', 'You must supply your BitPay email address with --email user@sample.com')
     }
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
