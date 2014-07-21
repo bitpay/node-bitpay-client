@@ -215,7 +215,7 @@ bitpay
   .description('invalidate client identity from your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {
-      return console.log('Error:', 'Access key not found, did you run `bitpay keyapprove`?');
+      return console.log('Error:', 'Access key not found, did you run `bitpay login`?');
     }
 
     var sin = fs.readFileSync(bitpay.input + '/api.pub').toString();
@@ -253,7 +253,7 @@ bitpay
   .description('retrieve user information for your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {
-      return console.log('Error:', 'Access key not found, did you run `bitpay keyapprove`?');
+      return console.log('Error:', 'Access key not found, did you run `bitpay login`?');
     }
 
     utils.recursiveGetSecret(bitpay.keypassword, function(secret){
