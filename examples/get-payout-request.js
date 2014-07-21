@@ -12,6 +12,11 @@ if (process.argv.length < 3) {
   console.log('usage: get-payout-request.js [payoutId]');
   return;
 }
+
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
 
   client.as('payroll').get('payouts/' + process.argv[2], { status: 'new' }, function(err, requests) {

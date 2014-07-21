@@ -12,6 +12,10 @@ if (process.argv.length < 3) {
   return;
 }
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
   client.get('invoices/' + process.argv[2], function(err, invoice) {
     if(err) console.log(err);

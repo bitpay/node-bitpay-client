@@ -13,6 +13,10 @@ var data = {
   notificationURL: 'http://your-ipn-server'
 };
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
 
   client.post('invoices', data, function(err, invoice) {

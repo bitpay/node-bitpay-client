@@ -13,6 +13,10 @@ if (process.argv.length < 3) {
   return;
 }
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
   client.as('payroll').get('payouts/' + process.argv[2], function(err, request) {
     console.log(err || request);

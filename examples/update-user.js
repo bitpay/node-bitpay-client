@@ -7,6 +7,10 @@ var config     = require('../config');
 var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
 
   client.as('user').get('user', function(err, user) {

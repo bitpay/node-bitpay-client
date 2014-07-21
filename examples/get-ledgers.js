@@ -8,6 +8,10 @@ var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
 var client     = new BitPay(privkey);
 var async      = require('async');
 
+client.on('error', function(err) {
+    console.log(err);
+});
+
 client.on('ready', function() {
 
   var today      = new Date().getTime();
