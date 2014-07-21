@@ -129,7 +129,7 @@ bitpay
   });
 
 bitpay
-  .command('keyapprove')
+  .command('login')
   .description('associate client identity with your bitpay user')
   .action(function() {
 
@@ -211,7 +211,7 @@ bitpay
 
 
 bitpay
-  .command('keyrevoke')
+  .command('logout')
   .description('invalidate client identity from your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -249,7 +249,7 @@ bitpay
   });
 
 bitpay
-  .command('who')
+  .command('whoami')
   .description('retrieve user information for your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -273,24 +273,6 @@ bitpay
       });
     });
 
-  });
-
-bitpay
-  .command('login')
-  .action(function() {
-    console.log('Please use command `bitpay keyapprove` instead')
-  });
-
-bitpay
-  .command('whoami')
-  .action(function() {
-    console.log('Please use command `bitpay who` instead')
-  });
-
-bitpay
-  .command('logout')
-  .action(function() {
-    console.log('Please use command `bitpay keyrevoke` instead')
   });
 
 bitpay.parse(process.argv);

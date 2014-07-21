@@ -22,8 +22,7 @@ Use the `bitpay` command line program to generate your client keys and associate
 ```
 ~# cd bitpay && sudo npm link
 ~# bitpay keygen
-~# bitpay keyapprove
-~# bitpay keyrevoke
+~# bitpay login
 ```
 
 For more information on how to use the CLI, run:
@@ -35,7 +34,7 @@ For more information on how to use the CLI, run:
 You can check to make sure you have correctly set up your client keys by running:
 
 ```
-~# bitpay who
+~# bitpay whoami
 ```
 
 ### Module
