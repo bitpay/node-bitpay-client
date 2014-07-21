@@ -8,6 +8,8 @@ var fs      = require('fs');
 var crypto = require('crypto')
 var read = require('read')
 var bitauth = require('bitauth');
+var hashPassword = require('../lib/hash-password');
+var CliUtils = require('../lib/cli-utils');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -23,50 +25,7 @@ bitpay
   .option('-e, --email [email]', 'email for your bitpay user', '')
   .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
 
-
-var BitPayUtils = function(){
-  this.secret = null;
-  this.recursions = 1;
-  this.maxRecursions = 3;
-}
-
-BitPayUtils.prototype.getSecret = function(keypassword, callback){
-  var secret = null;
-  try {
-    secret = bitauth.decrypt(
-      keypassword,
-      fs.readFileSync(bitpay.input + '/api.key').toString()
-    );
-    callback(null, secret);
-  } catch(err) {
-    callback(err, secret);
-  }
-}
-
-BitPayUtils.prototype.recursiveGetSecret = function(keypassword, done){
-  
-  var self = this;
-
-  self.getSecret(keypassword, function(err, output){
-    if (err) {
-      // ask for key password
-      read({ prompt: 'Enter Key Password: ', silent: true }, function(err, input) {
-        if (err) return console.log(err);
-        if ( self.recursions < self.maxRecursions ) {
-          self.recursions++;
-          self.recursiveGetSecret(input, done);
-        } else {
-          console.log('Exiting.')
-          process.exit();
-        }
-      })
-    } else {
-      done(output)
-    }
-  })
-}
-
-var utils = new BitPayUtils();
+var utils = new CliUtils(bitpay.input, bitpay.output);
 
 bitpay
   .command('keygen')
@@ -166,10 +125,6 @@ bitpay
       }
     }
 
-    var getPasswordHashed = function(password, callback){
-      crypto.pbkdf2(password, '..............', 200, 64, callback);
-    }
-
     var getPassword = function(callback){
       if ( !bitpay.password ) {
         read({ prompt: 'BitPay User Password: ', silent: true }, function(err, input) {
@@ -181,12 +136,12 @@ bitpay
       }
     }
 
-    var email, hashedPassword, twoFactorCode
+    var email, hashedPassword, twoFactorCode;
 
     getEmail(function(input){
       email = input;
       getPassword(function(passwordInput){
-        getPasswordHashed(passwordInput, function(err, hashedInput){
+        hashPassword(passwordInput, function(err, hashedInput){
           hashedPassword = hashedInput
           if (err) return console.log(err);
           getTwoFactorCode( function(codeInput){
@@ -195,7 +150,7 @@ bitpay
               id: sin,
               email: email,
               twoFactorCode: twoFactorCode,
-              hashedPassword: hashedPassword.toString('hex'),
+              hashedPassword: hashedPassword,
               label: 'node-bitpay-client'
             }, function(err, result) {
               if (err) return console.log('Error:', err.error);
