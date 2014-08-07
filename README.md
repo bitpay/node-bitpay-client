@@ -42,9 +42,9 @@ You can check to make sure you have correctly set up your client keys by running
 Require the BitPay API and create a client instance using your private key.
 
 ```js
-var BitPay  = require('bitpay');
+var bitpay  = require('bitpay');
 var privkey = fs.readFileSync('path/to/private.key');
-var client  = new BitPay(privkey);
+var client  = bitpay.createClient(privkey);
 ```
 
 The client will automatically retrieve your access tokens and emit a *ready* event when you can start sending requests.
@@ -69,24 +69,17 @@ client.get('invoices', function(err, invoices) {
 
 ### Overloading Configuration
 
-The BitPay client loads a configuration file from the root of the module. If you do not commit your `node_modules` to source control, you will need to overload the `config` dependency from within your own code.
-This can be done easily using a tool like [Soop](https://github.com/gasteve/node-soop) or [Proxyquire](https://github.com/thlorenz/proxyquire).
+The BitPay client loads a configuration file from `~/.bitpay/config.json` by default, which it creates after installation.
+You can override this default configuration, by passing a `config` value in the options argument.
 
-Example using Soop:
-
-```js
-var soop = require('soop');
-var BitPay = soop.load('bitpay', {
-  config: { /* ... */ }
-});
-```
-
-Example using Proxyquire:
+Example:
 
 ```js
-var proxyquire = require('proxyquire');
-var BitPay = proxyquire('bitpay', {
-  '../config': { /* ... */ }
+var client = bitpay.createClient(privKey, {
+  config: {
+    apiHost: 'bitpay.com',
+    apiPort: 443
+  }
 });
 ```
 
