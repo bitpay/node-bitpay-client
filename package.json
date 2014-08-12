@@ -1,7 +1,7 @@
 {
   "name": "bitpay",
   "preferGlobal": false,
-  "version": "0.1.1",
+  "version": "0.2.0",
   "author": "Gordon Hall <gordon@bitpay.com>",
   "description": "",
   "contributors": [
@@ -23,12 +23,13 @@
   },
   "scripts": {
     "test": "mocha",
-    "postinstall": "cp config.json.example config.json"
+    "setup": "node scripts/setup.js",
+    "postinstall": "npm run setup"
   },
-  "main": "./lib/rest-client.js",
+  "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "https://github.com/bitpay/node-bitpay-api.git"
+    "url": "https://github.com/bitpay/node-bitpay-client.git"
   },
   "keywords": [
     "bitpay",
@@ -38,7 +39,6 @@
   "dependencies": {
     "request": "^2.34.0",
     "read": "^1.0.5",
-    "soop": "^0.1.5",
     "extend": "^1.2.1",
     "async": "^0.7.0",
     "clarinet": "^0.8.1",

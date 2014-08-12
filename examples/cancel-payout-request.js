@@ -15,17 +15,13 @@ client.on('error', function(err) {
 client.on('ready', function() {
 
   client.as('payroll').get('payouts', { status: 'new' }, function(err, requests) {
-    
+
     var firstRequest = requests[0];
 
-    firstRequest.put({ status: 'cancelled'}, function(err, req) {
+    firstRequest.delete(function(err, req) {
       console.log(err || req);
     });
 
   });
 
 });
-
-
-
-
