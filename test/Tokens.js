@@ -2,10 +2,9 @@ var assert     = require('assert');
 var fs         = require('fs');
 var BitPay     = require('../lib/rest-client');
 
-var HOME       = process.env['HOME'];
 var config     = require('../config');
 var bitauth    = require('bitauth');
-var encPrivkey = fs.readFileSync(HOME + '/.bitpay/api.key').toString();
+var encPrivkey = fs.readFileSync( config.configDir + '/api.key').toString();
 var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
 
 var client     = new BitPay( privkey , {

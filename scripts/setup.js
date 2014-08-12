@@ -1,9 +1,9 @@
 var fs       = require('fs');
-var conf     = JSON.parse(fs.readFileSync(__dirname + '/../config.json.example'));
+var conf     = require(__dirname + '/../config');
 
 var isWin    = process.env.platform === 'win32';
 var HOME     = process.env[isWin ? 'USERPROFILE' : 'HOME'];
-var confPath = HOME + '/.bitpay';
+var confPath = conf.configDir;
 
 // check if we have a ~/.bitpay directory
 if (!fs.existsSync(confPath)) {
