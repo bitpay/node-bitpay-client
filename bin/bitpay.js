@@ -11,6 +11,7 @@ var async        = require('async');
 var bitauth      = require('bitauth');
 var hashPassword = require('../lib/hash-password');
 var CliUtils     = require('../lib/cli-utils');
+var util         = require('util');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -18,13 +19,9 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.0.4')
+  .version('0.1.0')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
-  .option('-k, --keypassword [password]', 'password for encrypting/decrypting your key', '')
-  .option('-p, --password [password]', 'password for your bitpay user', '')
-  .option('-e, --email [email]', 'email for your bitpay user', '')
-  .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
 
 var utils = new CliUtils(bitpay.input, bitpay.output);
 
@@ -117,6 +114,9 @@ bitpay
 bitpay
   .command('login')
   .description('associate client identity with your bitpay user')
+  .option('-p, --password [password]', 'password for your bitpay user', '')
+  .option('-e, --email [email]', 'email for your bitpay user', '')
+  .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
   .action(function() {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -299,7 +299,7 @@ bitpay
       );
     }
 
-    utils.recursiveGetSecret(bitpay.keypassword, function(secret){
+    utils.recursiveGetSecret(bitpay.keypassword, function(secret) {
       var client = BitPay.createClient(secret);
 
       // handle errors
@@ -322,6 +322,89 @@ bitpay
         });
       });
     });
+
+  });
+
+bitpay
+  .command('request')
+  .description('issue an api request')
+  .option('-T, --token [token]', 'access token or facade name', 'public')
+  .option('-X, --method [verb]', 'http method verb for request', 'GET')
+  .option('-R, --resource <url_fragment>', 'url path to resource')
+  .option('-P, --payload [body]', 'json string or file path')
+  .action(function(cmd) {
+    if (!cmd.resource) {
+      return console.log(
+        'Error:', 'You must specify a resource path using the -R option'
+      );
+    }
+
+    async.waterfall(
+      [
+        getKeyPassword,
+        createClient,
+        assemblePayload,
+        issueRequest
+      ],
+      function(err) {
+        if (err) {
+          console.log('Error:', util.inspect(err, {
+            depth: null, colors: true
+          }));
+          process.exit(1);
+        }
+      }
+    );
+
+    function getKeyPassword(next) {
+      if (cmd.token === 'public') {
+        return next(null, null);
+      }
+
+      if (!fs.existsSync(bitpay.input + '/api.key')) {
+        return next(null, null);
+      }
+
+      utils.recursiveGetSecret(bitpay.keypassword, function(secret) {
+        next(null, secret);
+      });
+    };
+
+    function createClient(secret, next) {
+      var client = BitPay.createClient(secret);
+
+      client.on('ready', function() {
+        next(null, client);
+      });
+
+      client.on('error', function(err) {
+        console.log('Error:', err);
+        process.exit(1);
+      });
+    };
+
+    function assemblePayload(client, next) {
+      if (fs.existsSync(cmd.payload)) {
+        var data = JSON.parse(fs.readFileSync(cmd.payload));
+        return next(null, client, data);
+      }
+
+      next(null, client, cmd.payload ? JSON.parse(cmd.payload) : {});
+    };
+
+    function issueRequest(client, data, next) {
+      var request = client.as(cmd.token)[cmd.method.toLowerCase()].bind(client);
+
+      request(cmd.resource, data, function(err, data) {
+        if (err) {
+          return next(err);
+        }
+
+        console.log(util.inspect(data, {
+          depth: null, colors: true
+        }));
+      });
+    };
 
   });
 
