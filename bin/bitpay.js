@@ -12,6 +12,7 @@ var bitauth      = require('bitauth');
 var hashPassword = require('../lib/hash-password');
 var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
+var path         = require('path');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -405,6 +406,84 @@ bitpay
         }));
       });
     };
+
+  });
+
+bitpay
+  .command('config')
+  .description('view and change configuration')
+  .option('-p, --print', 'print the current configuration')
+  .option('-l, --list', 'list available presets')
+  .option('-u, --use <test|prod|custom>', 'use a preset configuration')
+  .option('-S, --save <preset_name>', 'save current config as a preset')
+  .option('-s, --set <property_name>', 'config property to change')
+  .option('-v, --value <property_value>', 'value to change property to')
+  .action(function(cmd) {
+    var presets = fs.readdirSync(__dirname + '/../config')
+
+    if (fs.existsSync(HOME + '/.bitpay/presets')) {
+      presets = presets.concat(fs.readdirSync(HOME + '/.bitpay/presets'));
+    }
+    else {
+      fs.mkdirSync(HOME + '/.bitpay/presets');
+    }
+
+    if (cmd.print) {
+      return console.log(
+        util.inspect(require(HOME + '/.bitpay/config'), {
+          depth: null,
+          colors: true
+        })
+      );
+    }
+
+    if (cmd.list) {
+      return console.log(util.inspect(presets.map(function(p) {
+        return path.basename(p, '.json');
+      }), { colors: true }));
+    }
+
+    if (cmd.use) {
+      if (presets.indexOf(cmd.use + '.json') === -1) {
+        return console.log('Error: "' + cmd.use + '" is not a valid preset')
+      }
+
+      var incl   = fs.existsSync(__dirname + '/../config/' + cmd.use + '.json');
+      var local  = HOME + '/.bitpay/presets/';
+      var dir    = incl ? __dirname + '/../config/' : local;
+      var preset = dir + cmd.use + '.json'
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/config.json',
+        JSON.stringify(require(preset), null, 2)
+      );
+    }
+
+    if (cmd.set && cmd.value) {
+      var conf = require(HOME + '/.bitpay/config');
+
+      if (Object.keys(conf).indexOf(cmd.set) === -1) {
+        return console.log('Error: "' + cmd.set + '" is not a valid property');
+      }
+
+      conf[cmd.set] = cmd.value;
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/config.json',
+        JSON.stringify(conf, null, 2)
+      );
+    }
+
+    if (cmd.save) {
+      var current = fs.readFileSync(HOME + '/.bitpay/config.json');
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/presets/' + cmd.save + '.json',
+        current
+      );
+    }
+
+    cmd.help();
 
   });
 

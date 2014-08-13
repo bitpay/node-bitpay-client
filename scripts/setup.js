@@ -1,5 +1,5 @@
 var fs       = require('fs');
-var conf     = JSON.parse(fs.readFileSync(__dirname + '/../config.json.example'));
+var conf     = JSON.parse(fs.readFileSync(__dirname + '/../config/test.json'));
 
 var isWin    = process.env.platform === 'win32';
 var HOME     = process.env[isWin ? 'USERPROFILE' : 'HOME'];

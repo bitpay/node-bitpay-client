@@ -1,6 +1,5 @@
 {
   "apiHost": "test.bitpay.com",
   "apiPort": 443,
-  "forceSSL": true,
-  "keyPassword": ""
+  "forceSSL": true
 }
