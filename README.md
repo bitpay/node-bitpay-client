@@ -1,9 +1,11 @@
 BitPay Node.js API Client
 ==========================
 
-A Node.js module and command line client for interacting with [BitPay's Cryptographically Secure API](https://test.bitpay.com/api).
+A Node.js module and command line client for interacting with
+[BitPay's Cryptographically Secure API](https://test.bitpay.com/api).
 
-> Note: This API is currently only available in our *test* environment (test.bitpay.com) and is not yet ready for production.
+> Note: This API is currently only available in our *test* environment
+> (test.bitpay.com) and is not yet ready for production.
 
 ## Getting Started
 
@@ -17,7 +19,8 @@ Install using [Node Package Manager](https://www.npmjs.org/).
 
 ### CLI
 
-Use the `bitpay` command line program to generate your client keys and associate them with your account.
+Use the `bitpay` command line program to generate your client keys and
+associate them with your account.
 
 ```
 ~# cd bitpay && sudo npm link
@@ -25,16 +28,38 @@ Use the `bitpay` command line program to generate your client keys and associate
 ~# bitpay login
 ```
 
+You can check to make sure you have correctly set up your client keys by
+running:
+
+```
+~# bitpay whoami
+```
+
+If you switch your environment a lot, you can avoid editing your config file:
+
+```
+~# bitpay config --use prod
+~# bitpay config --use test
+```
+
+You can even create custom preset configurations:
+
+```
+~# bitpay config --set apiHost --value gordon.bp
+~# bitpay config --save local
+~# bitpay config --use local
+```
+
+Last but not least, you can issue API requests directly from the command line:
+
+```
+~# bitpay request --T merchant --R invoices --P '{"dateStart":"2014-01-01"}'
+```
+
 For more information on how to use the CLI, run:
 
 ```
 ~# bitpay --help
-```
-
-You can check to make sure you have correctly set up your client keys by running:
-
-```
-~# bitpay whoami
 ```
 
 ### Module
@@ -47,7 +72,8 @@ var privkey = fs.readFileSync('path/to/private.key');
 var client  = bitpay.createClient(privkey);
 ```
 
-The client will automatically retrieve your access tokens and emit a *ready* event when you can start sending requests.
+The client will automatically retrieve your access tokens and emit a *ready*
+event when you can start sending requests.
 
 ```js
 client.on('ready', function() {
@@ -57,7 +83,9 @@ client.on('ready', function() {
 });
 ```
 
-When resources are returned, they get extended with the same methods as the `client`, so you can chain requests onto them. For instance, to get the refunds associated with the first invoice returned from the example above:
+When resources are returned, they get extended with the same methods as the
+`client`, so you can chain requests onto them. For instance, to get the refunds
+associated with the first invoice returned from the example above:
 
 ```js
 client.get('invoices', function(err, invoices) {
@@ -69,8 +97,9 @@ client.get('invoices', function(err, invoices) {
 
 ### Overloading Configuration
 
-The BitPay client loads a configuration file from `~/.bitpay/config.json` by default, which it creates after installation.
-You can override this default configuration, by passing a `config` value in the options argument.
+The BitPay client loads a configuration file from `~/.bitpay/config.json` by
+default, which it creates after installation. You can override this default
+configuration, by passing a `config` value in the options argument.
 
 Example:
 
@@ -85,7 +114,10 @@ var client = bitpay.createClient(privKey, {
 
 ### Assuming a Different Facade
 
-Some operations in the API are only available to certain "facades", which restrict access to different functionality. By default, all requests are sent using the **merchant** facade. To assume a different facade, you can use the `as()` method.
+Some operations in the API are only available to certain "facades", which
+restrict access to different functionality. By default, all requests are sent
+using the **merchant** facade. To assume a different facade, you can use the
+`as()` method.
 
 ```js
 client.as('payroll').get('payouts', { status: 'new' }, function(err, payouts) {
