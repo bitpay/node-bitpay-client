@@ -65,7 +65,7 @@ bitpay
           if (input) {
             keypassword = input;
 
-            //check again to make sure there wasn't a typo
+            // check again to make sure there wasn't a typo
             return read({
               prompt: 'Verify Key Password: ',
               silent: true
@@ -118,7 +118,7 @@ bitpay
   .option('-p, --password [password]', 'password for your bitpay user', '')
   .option('-e, --email [email]', 'email for your bitpay user', '')
   .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
-  .action(function() {
+  .action(function(cmd) {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
@@ -133,7 +133,7 @@ bitpay
     });
 
     function getEmail(callback) {
-      if (!bitpay.email) {
+      if (!cmd.email) {
         return read({
           prompt: 'BitPay User Email: ',
           silent: false
@@ -146,28 +146,11 @@ bitpay
         });
       }
 
-      callback(null, bitpay.email)
-    };
-
-    function getTwoFactorCode(callback) {
-      if (!bitpay.twofactor) {
-        return read({
-          prompt: 'BitPay User Two-Factor Code (optional): ',
-          silent: false
-        }, function(err, input) {
-          if (err) {
-            return callback(err);
-          }
-
-          callback(null, input);
-        })
-      }
-
-      callback(null, bitpay.twofactor)
+      callback(null, cmd.email)
     };
 
     function getPassword(callback) {
-      if (!bitpay.password) {
+      if (!cmd.password) {
         return read({
           prompt: 'BitPay User Password: ',
           silent: true
@@ -184,10 +167,27 @@ bitpay
             callback(null, hashedInput);
           });
         });
-      };
+      }
 
-      callback(bitpay.password)
+      callback(null, cmd.password)
     }
+
+    function getTwoFactorCode(callback) {
+      if (!cmd.twofactor) {
+        return read({
+          prompt: 'BitPay User Two-Factor Code (optional): ',
+          silent: false
+        }, function(err, input) {
+          if (err) {
+            return callback(err);
+          }
+
+          callback(null, input);
+        })
+      }
+
+      callback(null, cmd.twofactor)
+    };
 
     async.series(
       [
