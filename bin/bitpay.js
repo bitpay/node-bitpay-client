@@ -12,6 +12,7 @@ var bitauth      = require('bitauth');
 var hashPassword = require('../lib/hash-password');
 var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
+var path         = require('path');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -64,7 +65,7 @@ bitpay
           if (input) {
             keypassword = input;
 
-            //check again to make sure there wasn't a typo
+            // check again to make sure there wasn't a typo
             return read({
               prompt: 'Verify Key Password: ',
               silent: true
@@ -117,7 +118,7 @@ bitpay
   .option('-p, --password [password]', 'password for your bitpay user', '')
   .option('-e, --email [email]', 'email for your bitpay user', '')
   .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
-  .action(function() {
+  .action(function(cmd) {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
@@ -132,7 +133,7 @@ bitpay
     });
 
     function getEmail(callback) {
-      if (!bitpay.email) {
+      if (!cmd.email) {
         return read({
           prompt: 'BitPay User Email: ',
           silent: false
@@ -145,28 +146,11 @@ bitpay
         });
       }
 
-      callback(null, bitpay.email)
-    };
-
-    function getTwoFactorCode(callback) {
-      if (!bitpay.twofactor) {
-        return read({
-          prompt: 'BitPay User Two-Factor Code (optional): ',
-          silent: false
-        }, function(err, input) {
-          if (err) {
-            return callback(err);
-          }
-
-          callback(null, input);
-        })
-      }
-
-      callback(null, bitpay.twofactor)
+      callback(null, cmd.email)
     };
 
     function getPassword(callback) {
-      if (!bitpay.password) {
+      if (!cmd.password) {
         return read({
           prompt: 'BitPay User Password: ',
           silent: true
@@ -183,10 +167,27 @@ bitpay
             callback(null, hashedInput);
           });
         });
-      };
+      }
 
-      callback(bitpay.password)
+      callback(null, cmd.password)
     }
+
+    function getTwoFactorCode(callback) {
+      if (!cmd.twofactor) {
+        return read({
+          prompt: 'BitPay User Two-Factor Code (optional): ',
+          silent: false
+        }, function(err, input) {
+          if (err) {
+            return callback(err);
+          }
+
+          callback(null, input);
+        })
+      }
+
+      callback(null, cmd.twofactor)
+    };
 
     async.series(
       [
@@ -405,6 +406,84 @@ bitpay
         }));
       });
     };
+
+  });
+
+bitpay
+  .command('config')
+  .description('view and change configuration')
+  .option('-p, --print', 'print the current configuration')
+  .option('-l, --list', 'list available presets')
+  .option('-u, --use <test|prod|custom>', 'use a preset configuration')
+  .option('-S, --save <preset_name>', 'save current config as a preset')
+  .option('-s, --set <property_name>', 'config property to change')
+  .option('-v, --value <property_value>', 'value to change property to')
+  .action(function(cmd) {
+    var presets = fs.readdirSync(__dirname + '/../config')
+
+    if (fs.existsSync(HOME + '/.bitpay/presets')) {
+      presets = presets.concat(fs.readdirSync(HOME + '/.bitpay/presets'));
+    }
+    else {
+      fs.mkdirSync(HOME + '/.bitpay/presets');
+    }
+
+    if (cmd.print) {
+      return console.log(
+        util.inspect(require(HOME + '/.bitpay/config'), {
+          depth: null,
+          colors: true
+        })
+      );
+    }
+
+    if (cmd.list) {
+      return console.log(util.inspect(presets.map(function(p) {
+        return path.basename(p, '.json');
+      }), { colors: true }));
+    }
+
+    if (cmd.use) {
+      if (presets.indexOf(cmd.use + '.json') === -1) {
+        return console.log('Error: "' + cmd.use + '" is not a valid preset')
+      }
+
+      var incl   = fs.existsSync(__dirname + '/../config/' + cmd.use + '.json');
+      var local  = HOME + '/.bitpay/presets/';
+      var dir    = incl ? __dirname + '/../config/' : local;
+      var preset = dir + cmd.use + '.json'
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/config.json',
+        JSON.stringify(require(preset), null, 2)
+      );
+    }
+
+    if (cmd.set && cmd.value) {
+      var conf = require(HOME + '/.bitpay/config');
+
+      if (Object.keys(conf).indexOf(cmd.set) === -1) {
+        return console.log('Error: "' + cmd.set + '" is not a valid property');
+      }
+
+      conf[cmd.set] = cmd.value;
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/config.json',
+        JSON.stringify(conf, null, 2)
+      );
+    }
+
+    if (cmd.save) {
+      var current = fs.readFileSync(HOME + '/.bitpay/config.json');
+
+      return fs.writeFileSync(
+        HOME + '/.bitpay/presets/' + cmd.save + '.json',
+        current
+      );
+    }
+
+    cmd.help();
 
   });
 
