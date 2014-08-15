@@ -1,11 +1,10 @@
 var fs         = require('fs');
-var bitauth    = require('bitauth');
 var HOME       = process.env['HOME'];
-var BitPay     = require('../index');
+var bitauth    = require('bitauth');
+var bitpay     = require('../index');
 var encPrivkey = fs.readFileSync(HOME + '/.bitpay/api.key').toString();
-var config     = require(HOME + '/.bitpay/config');
-var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
-var client     = BitPay.createClient(privkey);
+var privkey    = bitauth.decrypt('', encPrivkey); // decrypt with your key pass
+var client     = bitpay.createClient(privkey);
 
 var data = {
   price: 100,

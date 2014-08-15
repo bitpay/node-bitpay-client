@@ -1,12 +1,10 @@
 var fs         = require('fs');
-var bitauth    = require('bitauth');
 var HOME       = process.env['HOME'];
-var BitPay     = require('../lib/rest-client');
+var bitauth    = require('bitauth');
+var bitpay     = require('../index');
 var encPrivkey = fs.readFileSync(HOME + '/.bitpay/api.key').toString();
-var config     = require('../config');
-var privkey    = bitauth.decrypt(config.keyPassword, encPrivkey);
-var client     = new BitPay(privkey);
-var async      = require('async');
+var privkey    = bitauth.decrypt('', encPrivkey); // decrypt with your key pass
+var client     = bitpay.createClient(privkey);
 
 client.on('error', function(err) {
     console.log(err);
