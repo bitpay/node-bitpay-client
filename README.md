@@ -15,6 +15,13 @@ Install using [Node Package Manager](https://www.npmjs.org/).
 ~# npm install bitpay
 ```
 
+If you do not use NPM to install (instead cloning this repository), you will
+need to run the following from the project root:
+
+```
+~# npm run setup
+```
+
 ## Usage
 
 ### CLI
