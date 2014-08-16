@@ -152,10 +152,10 @@ bitpay
           }
 
           callback(null, input);
-        })
+        });
       }
 
-      callback(null, cmd.pairingcode)
+      callback(null, cmd.pairingcode);
     };
 
     getPairingCode(function(err, code) {
