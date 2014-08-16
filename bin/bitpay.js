@@ -13,6 +13,7 @@ var hashPassword = require('../lib/hash-password');
 var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
 var path         = require('path');
+var config       = require(HOME + '/.bitpay/config');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -38,13 +39,23 @@ bitpay
         var sin    = bitauth.generateSin();
         var secret = bitauth.encrypt(keypassword, sin.priv);
 
-        // write the files
-        console.log('Writing keys...');
-
         fs.writeFileSync(bitpay.output + '/api.key', secret);
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
-        console.log('Keys saved to:', bitpay.output, '\r');
+        console.log('Keys saved to:', bitpay.output, '\n');
+        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log(
+          'Pair this device with your account by creating a pairing code (RECOMMENDED):',
+          '\n',
+          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-tokens',
+          '\n\n'
+        );
+        console.log(
+          'Grant this device full access to your account:',
+          '\n',
+          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-clients',
+          '\n\n'
+        );
 
         process.exit();
       });
@@ -114,10 +125,8 @@ bitpay
 
 bitpay
   .command('login')
-  .description('associate client identity with your bitpay user')
-  .option('-p, --password [password]', 'password for your bitpay user', '')
-  .option('-e, --email [email]', 'email for your bitpay user', '')
-  .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
+  .description('recieve a token for the cryptographically secure bitpay api')
+  .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -132,10 +141,10 @@ bitpay
       console.log('Error:', err);
     });
 
-    function getEmail(callback) {
-      if (!cmd.email) {
+    function getPairingCode(callback) {
+      if (!cmd.pairingcode) {
         return read({
-          prompt: 'BitPay User Email: ',
+          prompt: 'BitPay Token Pairing Code: ',
           silent: false
         }, function(err, input) {
           if (err) {
@@ -146,88 +155,29 @@ bitpay
         });
       }
 
-      callback(null, cmd.email)
+      callback(null, cmd.pairingcode);
     };
 
-    function getPassword(callback) {
-      if (!cmd.password) {
-        return read({
-          prompt: 'BitPay User Password: ',
-          silent: true
-        }, function(err, input) {
-          if (err) {
-            return console.log(err);
-          }
-
-          hashPassword(input, function(err, hashedInput) {
-            if (err) {
-              return callback(err);
-            }
-
-            callback(null, hashedInput);
-          });
-        });
+    getPairingCode(function(err, code) {
+      if (err) {
+        return console.log(err);
       }
 
-      callback(null, cmd.password)
-    }
+      var payload = {
+        id: sin,
+        pairingCode: code,
+        label: 'node-bitpay-client'
+      };
 
-    function getTwoFactorCode(callback) {
-      if (!cmd.twofactor) {
-        return read({
-          prompt: 'BitPay User Two-Factor Code (optional): ',
-          silent: false
-        }, function(err, input) {
-          if (err) {
-            return callback(err);
-          }
-
-          callback(null, input);
-        })
-      }
-
-      callback(null, cmd.twofactor)
-    };
-
-    async.series(
-      [
-        getEmail,
-        getPassword,
-        getTwoFactorCode
-      ],
-      function(err, results) {
+      client.as('public').post('tokens', payload, function(err, result) {
         if (err) {
-          return console.log(err);
+          return console.log('Error:', err);
         }
 
-        var email         = results[0];
-        var password      = results[1];
-        var twoFactorCode = results[2];
+        console.log('Device paired!');
+      });
 
-        var payload = {
-          id: sin,
-          email: email,
-          label: 'node-bitpay-client'
-        };
-
-        if (password) {
-          payload.hashedPassword = password;
-        }
-
-        if (twoFactorCode) {
-          payload.twoFactorCode = twoFactorCode;
-        }
-
-        client.as('public').post('clients', payload, function(err, result) {
-          if (err) {
-            return console.log('Error:', err);
-          }
-
-          console.log('Success!');
-        });
-
-      }
-    );
+    });
 
   });
 
@@ -430,7 +380,7 @@ bitpay
 
     if (cmd.print) {
       return console.log(
-        util.inspect(require(HOME + '/.bitpay/config'), {
+        util.inspect(config, {
           depth: null,
           colors: true
         })

@@ -138,7 +138,9 @@ client.as('payroll').get('payouts', { status: 'new' }, function(err, payouts) {
 
 ### Streaming Responses
 
-All of the `client` methods return a `Stream`, which you may use for more custom implementations. Here is a very rudimentary example using [Clarinet](https://github.com/dscape/clarinet), a streaming JSON parser.
+All of the `client` methods return a `Stream`, which you may use for more
+custom implementations. Here is a very rudimentary example using
+[Clarinet](https://github.com/dscape/clarinet), a streaming JSON parser.
 
 ```js
 var parser = require('clarinet').createStream();
