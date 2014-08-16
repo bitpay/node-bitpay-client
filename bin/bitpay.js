@@ -46,6 +46,10 @@ bitpay
 
         console.log('Keys saved to:', bitpay.output, '\r');
 
+        console.log('Your new ID is: '+ sin.sin, '\r\r');
+
+        console.log('Next you can run the login command with a pairing code to recieve a token to use the API. You can get a pairing code from BitPay Dashboard -> My Account -> Cryptographically Secure API -> API Tokens. You may alternatively associate your ID with your BitPay use from the BitPay Dashboard and navigate to My Account -> Cryptographically Secure API -> My API Identities. You will then have a token to use the merchant and user facades.', '\r');
+
         process.exit();
       });
     };
@@ -114,10 +118,8 @@ bitpay
 
 bitpay
   .command('login')
-  .description('associate client identity with your bitpay user')
-  .option('-p, --password [password]', 'password for your bitpay user', '')
-  .option('-e, --email [email]', 'email for your bitpay user', '')
-  .option('-t, --twofactor [code]', 'two-factor code for your bitpay user', '')
+  .description('recieve a token for the cryptographically secure bitpay api')
+  .option('-c, --pairingcode [code]', 'bitpay api pairing code ', '')
   .action(function(cmd) {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -132,50 +134,10 @@ bitpay
       console.log('Error:', err);
     });
 
-    function getEmail(callback) {
-      if (!cmd.email) {
+    function getPairingCode(callback) {
+      if (!cmd.pairingcode) {
         return read({
-          prompt: 'BitPay User Email: ',
-          silent: false
-        }, function(err, input) {
-          if (err) {
-            return callback(err);
-          }
-
-          callback(null, input);
-        });
-      }
-
-      callback(null, cmd.email)
-    };
-
-    function getPassword(callback) {
-      if (!cmd.password) {
-        return read({
-          prompt: 'BitPay User Password: ',
-          silent: true
-        }, function(err, input) {
-          if (err) {
-            return console.log(err);
-          }
-
-          hashPassword(input, function(err, hashedInput) {
-            if (err) {
-              return callback(err);
-            }
-
-            callback(null, hashedInput);
-          });
-        });
-      }
-
-      callback(null, cmd.password)
-    }
-
-    function getTwoFactorCode(callback) {
-      if (!cmd.twofactor) {
-        return read({
-          prompt: 'BitPay User Two-Factor Code (optional): ',
+          prompt: 'BitPay Token Pairing Code: ',
           silent: false
         }, function(err, input) {
           if (err) {
@@ -186,39 +148,25 @@ bitpay
         })
       }
 
-      callback(null, cmd.twofactor)
+      callback(null, cmd.pairingcode)
     };
 
     async.series(
       [
-        getEmail,
-        getPassword,
-        getTwoFactorCode
+        getPairingCode
       ],
       function(err, results) {
         if (err) {
           return console.log(err);
         }
 
-        var email         = results[0];
-        var password      = results[1];
-        var twoFactorCode = results[2];
-
         var payload = {
           id: sin,
-          email: email,
+          pairingCode: results[0],
           label: 'node-bitpay-client'
         };
 
-        if (password) {
-          payload.hashedPassword = password;
-        }
-
-        if (twoFactorCode) {
-          payload.twoFactorCode = twoFactorCode;
-        }
-
-        client.as('public').post('clients', payload, function(err, result) {
+        client.as('public').post('tokens', payload, function(err, result) {
           if (err) {
             return console.log('Error:', err);
           }
