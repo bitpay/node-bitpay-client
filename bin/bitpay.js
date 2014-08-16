@@ -13,6 +13,7 @@ var hashPassword = require('../lib/hash-password');
 var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
 var path         = require('path');
+var config       = require(HOME + '/.bitpay/config');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -38,17 +39,23 @@ bitpay
         var sin    = bitauth.generateSin();
         var secret = bitauth.encrypt(keypassword, sin.priv);
 
-        // write the files
-        console.log('Writing keys...');
-
         fs.writeFileSync(bitpay.output + '/api.key', secret);
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
-        console.log('Keys saved to:', bitpay.output, '\r');
-
-        console.log('Your new ID is: '+ sin.sin, '\r\r');
-
-        console.log('Next you can run the login command with a pairing code to recieve a token to use the API. You can get a pairing code from BitPay Dashboard -> My Account -> Cryptographically Secure API -> API Tokens. You may alternatively associate your ID with your BitPay use from the BitPay Dashboard and navigate to My Account -> Cryptographically Secure API -> My API Identities. You will then have a token to use the merchant and user facades.', '\r');
+        console.log('Keys saved to:', bitpay.output, '\n');
+        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log(
+          'Pair this device with your account by creating a pairing code (RECOMMENDED):',
+          '\n',
+          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-tokens',
+          '\n\n'
+        );
+        console.log(
+          'Grant this device full access to your account:',
+          '\n',
+          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-clients',
+          '\n\n'
+        );
 
         process.exit();
       });
@@ -119,7 +126,7 @@ bitpay
 bitpay
   .command('login')
   .description('recieve a token for the cryptographically secure bitpay api')
-  .option('-c, --pairingcode [code]', 'bitpay api pairing code ', '')
+  .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
@@ -151,31 +158,26 @@ bitpay
       callback(null, cmd.pairingcode)
     };
 
-    async.series(
-      [
-        getPairingCode
-      ],
-      function(err, results) {
+    getPairingCode(function(err, code) {
+      if (err) {
+        return console.log(err);
+      }
+
+      var payload = {
+        id: sin,
+        pairingCode: code,
+        label: 'node-bitpay-client'
+      };
+
+      client.as('public').post('tokens', payload, function(err, result) {
         if (err) {
-          return console.log(err);
+          return console.log('Error:', err);
         }
 
-        var payload = {
-          id: sin,
-          pairingCode: results[0],
-          label: 'node-bitpay-client'
-        };
+        console.log('Device paired!');
+      });
 
-        client.as('public').post('tokens', payload, function(err, result) {
-          if (err) {
-            return console.log('Error:', err);
-          }
-
-          console.log('Success!');
-        });
-
-      }
-    );
+    });
 
   });
 
@@ -378,7 +380,7 @@ bitpay
 
     if (cmd.print) {
       return console.log(
-        util.inspect(require(HOME + '/.bitpay/config'), {
+        util.inspect(config, {
           depth: null,
           colors: true
         })
