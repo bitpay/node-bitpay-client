@@ -43,17 +43,17 @@ bitpay
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
         console.log('Keys saved to:', bitpay.output, '\n');
-        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log('Your client identifier is:', sin.sin, '\n\n');
         console.log(
-          'Pair this device with your account by creating a pairing code (RECOMMENDED):',
+          'Pair this client with your account by creating a pairing code (RECOMMENDED):',
           '\n',
           'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-tokens',
           '\n\n'
         );
         console.log(
-          'Grant this device full access to your account:',
+          'Grant this client full access to your merchant:',
           '\n',
-          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-clients',
+          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-access-request?id='+sin.sin+'&label=node-bitpay-client&facade=merchant',
           '\n\n'
         );
 
