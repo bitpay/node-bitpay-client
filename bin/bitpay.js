@@ -14,6 +14,7 @@ var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
 var path         = require('path');
 var config       = require(HOME + '/.bitpay/config');
+var qs           = require('querystring');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -38,6 +39,11 @@ bitpay
 
         var sin    = bitauth.generateSin();
         var secret = bitauth.encrypt(keypassword, sin.priv);
+        var query  = qs.stringify({
+          label: 'node-bitpay-client-' + require('os').hostname(),
+          id: sin.sin,
+          facade: 'merchant'
+        });
 
         fs.writeFileSync(bitpay.output + '/api.key', secret);
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
@@ -45,15 +51,19 @@ bitpay
         console.log('Keys saved to:', bitpay.output, '\n');
         console.log('Your device identifier is:', sin.sin, '\n\n');
         console.log(
-          'Pair this device with your account by creating a pairing code (RECOMMENDED):',
+          'Pair this device with your account with a pairing code (RECOMMENDED):',
           '\n',
-          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-tokens',
+          'https://' + config.apiHost +
+          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
+          '/api-tokens',
           '\n\n'
         );
         console.log(
           'Grant this device full access to your account:',
           '\n',
-          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-clients',
+          'https://' + config.apiHost +
+          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
+          '/api-access-request?' + query,
           '\n\n'
         );
 
@@ -124,7 +134,7 @@ bitpay
   });
 
 bitpay
-  .command('login')
+  .command('pair')
   .description('recieve a token for the cryptographically secure bitpay api')
   .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
@@ -185,7 +195,7 @@ bitpay
 
 
 bitpay
-  .command('logout')
+  .command('unpair')
   .description('invalidate client identity from your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {

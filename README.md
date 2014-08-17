@@ -32,7 +32,7 @@ associate them with your account.
 ```
 ~# cd bitpay && sudo npm link
 ~# bitpay keygen
-~# bitpay login
+~# bitpay pair
 ```
 
 You can check to make sure you have correctly set up your client keys by
