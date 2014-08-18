@@ -14,6 +14,7 @@ var CliUtils     = require('../lib/cli-utils');
 var util         = require('util');
 var path         = require('path');
 var config       = require(HOME + '/.bitpay/config');
+var qs           = require('querystring');
 
 // ensure the existence of the default in/out directory
 if (!fs.existsSync(HOME + '/.bitpay')) {
@@ -21,7 +22,7 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.1.0')
+  .version('0.3.0')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
 
@@ -38,22 +39,31 @@ bitpay
 
         var sin    = bitauth.generateSin();
         var secret = bitauth.encrypt(keypassword, sin.priv);
+        var query  = qs.stringify({
+          label: 'node-bitpay-client-' + require('os').hostname(),
+          id: sin.sin,
+          facade: 'merchant'
+        });
 
         fs.writeFileSync(bitpay.output + '/api.key', secret);
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
         console.log('Keys saved to:', bitpay.output, '\n');
-        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log('Your client identifier is:', sin.sin, '\n\n');
         console.log(
-          'Pair this device with your account by creating a pairing code (RECOMMENDED):',
+          'Pair this client with your account with a pairing code (RECOMMENDED):',
           '\n',
-          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-tokens',
+          'https://' + config.apiHost +
+          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
+          '/api-tokens',
           '\n\n'
         );
         console.log(
-          'Grant this device full access to your account:',
+          'Grant this client full access to your account:',
           '\n',
-          'https://' + config.apiHost + (config.apiPort === 443 ? '' : ':' + config.apiPort) + '/api-clients',
+          'https://' + config.apiHost +
+          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
+          '/api-access-request?' + query,
           '\n\n'
         );
 
@@ -124,10 +134,12 @@ bitpay
   });
 
 bitpay
-  .command('login')
+  .command('pair')
   .description('recieve a token for the cryptographically secure bitpay api')
   .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
+
+    var self = this;
 
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
@@ -142,7 +154,10 @@ bitpay
     });
 
     function getPairingCode(callback) {
-      if (!cmd.pairingcode) {
+
+      if ( typeof( self.args[0] ) === 'string' ) {
+        return callback(null, self.args[0]);
+      } else if (!cmd.pairingcode) {
         return read({
           prompt: 'BitPay Token Pairing Code: ',
           silent: false
@@ -185,7 +200,7 @@ bitpay
 
 
 bitpay
-  .command('logout')
+  .command('unpair')
   .description('invalidate client identity from your bitpay user')
   .action(function() {
     if (!fs.existsSync(bitpay.input + '/api.key')) {
