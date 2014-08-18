@@ -22,7 +22,7 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.1.0')
+  .version(require('../package').version)
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
 
@@ -49,9 +49,9 @@ bitpay
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
         console.log('Keys saved to:', bitpay.output, '\n');
-        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log('Your client identifier is:', sin.sin, '\n\n');
         console.log(
-          'Pair this device with your account with a pairing code (RECOMMENDED):',
+          'Pair this client with your account with a pairing code (RECOMMENDED):',
           '\n',
           'https://' + config.apiHost +
           (config.apiPort === 443 ? '' : ':' + config.apiPort) +
@@ -59,7 +59,7 @@ bitpay
           '\n\n'
         );
         console.log(
-          'Grant this device full access to your account:',
+          'Grant this client full access to your account:',
           '\n',
           'https://' + config.apiHost +
           (config.apiPort === 443 ? '' : ':' + config.apiPort) +
