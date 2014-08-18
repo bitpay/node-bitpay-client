@@ -22,7 +22,7 @@ if (!fs.existsSync(HOME + '/.bitpay')) {
 }
 
 bitpay
-  .version('0.1.0')
+  .version('0.3.0')
   .option('-o, --output [directory]', 'export directory for keys', HOME + '/.bitpay')
   .option('-i, --input [directory]', 'import directory for keys', HOME + '/.bitpay')
 
@@ -49,9 +49,9 @@ bitpay
         fs.writeFileSync(bitpay.output + '/api.pub' , sin.sin);
 
         console.log('Keys saved to:', bitpay.output, '\n');
-        console.log('Your device identifier is:', sin.sin, '\n\n');
+        console.log('Your client identifier is:', sin.sin, '\n\n');
         console.log(
-          'Pair this device with your account with a pairing code (RECOMMENDED):',
+          'Pair this client with your account with a pairing code (RECOMMENDED):',
           '\n',
           'https://' + config.apiHost +
           (config.apiPort === 443 ? '' : ':' + config.apiPort) +
@@ -59,7 +59,7 @@ bitpay
           '\n\n'
         );
         console.log(
-          'Grant this device full access to your account:',
+          'Grant this client full access to your account:',
           '\n',
           'https://' + config.apiHost +
           (config.apiPort === 443 ? '' : ':' + config.apiPort) +
@@ -139,6 +139,8 @@ bitpay
   .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
 
+    var self = this;
+
     if (!fs.existsSync(bitpay.input + '/api.key')) {
       return console.log('Error:', 'Access key not found, did you run `bitpay keygen`?');
     }
@@ -152,7 +154,10 @@ bitpay
     });
 
     function getPairingCode(callback) {
-      if (!cmd.pairingcode) {
+
+      if ( typeof( self.args[0] ) === 'string' ) {
+        return callback(null, self.args[0]);
+      } else if (!cmd.pairingcode) {
         return read({
           prompt: 'BitPay Token Pairing Code: ',
           silent: false
