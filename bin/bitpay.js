@@ -50,22 +50,6 @@ bitpay
 
         console.log('Keys saved to:', bitpay.output, '\n');
         console.log('Your client identifier is:', sin.sin, '\n\n');
-        console.log(
-          'Pair this client with your account with a pairing code (RECOMMENDED):',
-          '\n',
-          'https://' + config.apiHost +
-          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
-          '/api-tokens',
-          '\n\n'
-        );
-        console.log(
-          'Grant this client full access to your account:',
-          '\n',
-          'https://' + config.apiHost +
-          (config.apiPort === 443 ? '' : ':' + config.apiPort) +
-          '/api-access-request?' + query,
-          '\n\n'
-        );
 
         process.exit();
       });
@@ -135,7 +119,7 @@ bitpay
 
 bitpay
   .command('pair')
-  .description('recieve a token for the cryptographically secure bitpay api')
+  .description('receive a token for the cryptographically secure bitpay api')
   .option('-c, --pairingcode <code>', 'bitpay api pairing code')
   .action(function(cmd) {
 
@@ -151,27 +135,25 @@ bitpay
       console.log('Error:', err);
     });
 
-    function getPairingCode(callback) {
-      if (!cmd.pairingcode) {
-        return read({
-          prompt: 'BitPay Token Pairing Code: ',
-          silent: false
-        }, function(err, input) {
-          if (err) {
-            return callback(err);
-          }
+    function getInactiveToken(facade, callback){
 
-          callback(null, input);
-        });
-      }
+      var payload = {
+        id: sin,
+        facade: facade,
+        label: 'node-bitpay-client-' + require('os').hostname()
+      };
 
-      callback(null, cmd.pairingcode);
-    };
+      client.as('public').post('tokens', payload, function(err, result) {
+        if (err ) {
+          return callback(err);
+        }
+        if (!result[0]) return callback(new Error('No token returned'));
+        callback(null, result[0]);
+      });
 
-    getPairingCode(function(err, code) {
-      if (err) {
-        return console.log(err);
-      }
+    }
+
+    function claimToken(code, callback) {
 
       var payload = {
         id: sin,
@@ -181,13 +163,137 @@ bitpay
 
       client.as('public').post('tokens', payload, function(err, result) {
         if (err) {
-          return console.log('Error:', err);
+          return callback(err);
         }
-
-        console.log('Device paired!');
+        if (!result[0]) return callback(new Error('No token returned'));
+        return callback(null, result[0]);
       });
 
-    });
+    }
+
+    function promptPairingCode(callback){
+
+      if ( cmd.pairingcode ) return callback(null, cmd.pairingcode);
+
+      bitpay.confirm(
+        'Do you have a pairing code?',
+        function(yes) {
+          if (yes) {
+            return read({
+              prompt: 'BitPay Token Pairing Code: ',
+              silent: false
+            }, function(err, input) {
+              if (err) {
+                return callback(err);
+              }
+              callback(null, input);
+            });
+          }
+          return callback(null, false);
+        });
+
+    }
+
+    function pairWithClient(code, callback){
+
+      if ( code ) {
+
+        claimToken(code, function(err, token){
+
+          if ( err ) return callback( err );
+
+          return console.log('\n\n', 'Client successfully paired with `'+ token.facade + '` facade capabilities.', '\n\n');
+          process.exit();
+
+        });
+      } else {
+        callback(null)
+      }
+
+    }
+
+    function retreivePairingCode(callback){
+
+      console.log('Okay, we can get a pairing code, please choose a facade:');
+
+      var list = {
+        'Point of Sale': 'pos',
+        'Merchant': 'merchant'
+      }
+      var listOptions = Object.keys(list)
+
+      bitpay.choose(listOptions, function(i){
+
+        var facade = list[listOptions[i]];
+
+        process.stdin.destroy();
+
+        getInactiveToken(facade, function(err, token){
+
+          if (err) callback( err );
+
+          if ( !token.pairingCode ) {
+            return console.log('No pairing code found');
+          }
+
+          var pairingCode = token.pairingCode;
+
+          console.log(
+            '\n',
+            'Your token information:\n\n',
+            'Client ID:\t'+sin,
+            '\n',
+            'Pairing Code:\t'+pairingCode,
+            '\n',
+            'Label:\t\t'+token.label,
+            '\n',
+            'Facade:\t'+token.facade,
+            '\n'
+          );
+
+          var expirationDate = new Date( token.pairingExpiration );
+
+          console.log(
+            '\n',
+            'Your pairing code will be available until: '+expirationDate,
+            '\n'
+          )
+
+          console.log(
+            '\n',
+            'Pair this client with another organization by giving an administrator this pairing code:',
+            '\n',
+            pairingCode
+          );
+
+          var query  = qs.stringify({
+            pairingCode: pairingCode
+          });
+
+          console.log(
+            '\n',
+            'Pair this client with your organization:',
+            '\n',
+            'https://' + config.apiHost +
+              (config.apiPort === 443 ? '' : ':' + config.apiPort) +
+              '/api-access-request?' + query,
+            '\n\n'
+          );
+
+          callback(null);
+
+        })
+      })
+    }
+
+    async.waterfall([
+      promptPairingCode,
+      pairWithClient,
+      retreivePairingCode
+    ], function(err){
+      if ( err ) console.log('Error:', err );
+      process.exit();
+    })
 
   });
 
