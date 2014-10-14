@@ -32,13 +32,6 @@ associate them with your account.
 ~# bitpay pair
 ```
 
-You can check to make sure you have correctly set up your client keys by
-running:
-
-```
-~# bitpay whoami
-```
-
 If you switch your environment a lot, you can avoid editing your config file:
 
 ```
