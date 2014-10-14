@@ -4,9 +4,6 @@ BitPay Node.js API Client
 A Node.js module and command line client for interacting with
 [BitPay's Cryptographically Secure API](https://test.bitpay.com/api).
 
-> Note: This API is currently only available in our *test* environment
-> (test.bitpay.com) and is not yet ready for production.
-
 ## Getting Started
 
 Install using [Node Package Manager](https://www.npmjs.org/).
@@ -30,16 +27,9 @@ Use the `bitpay` command line program to generate your client keys and
 associate them with your account.
 
 ```
-~# cd bitpay && sudo npm link
+~# cd bitpay && npm link
 ~# bitpay keygen
 ~# bitpay pair
-```
-
-You can check to make sure you have correctly set up your client keys by
-running:
-
-```
-~# bitpay whoami
 ```
 
 If you switch your environment a lot, you can avoid editing your config file:
@@ -60,7 +50,7 @@ You can even create custom preset configurations:
 Last but not least, you can issue API requests directly from the command line:
 
 ```
-~# bitpay request --T merchant --R invoices --P '{"dateStart":"2014-01-01"}'
+~# bitpay request -T merchant -R invoices -P '{"dateStart":"2014-01-01"}'
 ```
 
 For more information on how to use the CLI, run:
