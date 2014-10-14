@@ -7,7 +7,7 @@ var privkey    = bitauth.decrypt('', encPrivkey); // decrypt with your key pass
 var client     = bitpay.createClient(privkey);
 
 client.on('error', function(err) {
-    console.log(err);
+  console.log(err);
 });
 
 client.on('ready', function() {
