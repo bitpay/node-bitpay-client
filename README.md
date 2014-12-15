@@ -4,7 +4,7 @@ BitPay Node.js API Client
 [![Coverage Status](https://coveralls.io/repos/bitpay/node-bitpay-client/badge.png?branch=master)](https://coveralls.io/r/bitpay/node-bitpay-client?branch=master)
 
 A Node.js module and command line client for interacting with
-[BitPay's Cryptographically Secure API](https://test.bitpay.com/api).
+[BitPay's Cryptographically Secure API](https://bitpay.com/api).
 
 ## Getting Started
 
