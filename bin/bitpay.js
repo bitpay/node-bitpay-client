@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var isWin        = process.env.platform === 'win32';
+var isWin        = process.platform === 'win32';
 var HOME         = process.env[isWin ? 'USERPROFILE' : 'HOME'];
 var bitpay       = require('commander');
 var BitPay       = require('../index');
