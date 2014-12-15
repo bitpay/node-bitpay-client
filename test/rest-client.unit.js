@@ -2,6 +2,8 @@ var proxyquire = require('proxyquire');
 var should     = require('should');
 var sinon      = require('sinon');
 
+var myPrivateKey = '97811b691dd7ebaeb67977d158e1da2c4d3eaa4ee4e2555150628acade6b344c';
+
 describe('RESTClient', function() {
 
   var RESTClient = proxyquire('../lib/rest-client', {
@@ -20,14 +22,14 @@ describe('RESTClient', function() {
     });
 
     it('should create an instance of the client with a secret', function(done) {
-      var client = new RESTClient('myprivatekey');
+      var client = new RESTClient( myPrivateKey );
       client.defaults.getTokens.should.equal(true);
       client.defaults.signRequests.should.equal(true);
       client.on('ready', done);
     });
 
     it('should override default configuration if provided', function(done) {
-      var client = new RESTClient('myprivatekey', {
+      var client = new RESTClient( myPrivateKey , {
         config: {
           apiHost: 'myhost',
           apiPort: 'myport',
@@ -44,13 +46,13 @@ describe('RESTClient', function() {
   describe('#as', function() {
 
     it('should change the client facade', function(done) {
-      var client = new RESTClient('myprivatekey');
+      var client = new RESTClient( myPrivateKey );
       client.as('public').facade.should.equal('public');
       done();
     });
 
     it('should reset the client facade after request', function(done) {
-      var client = new RESTClient('myprivatekey');
+      var client = new RESTClient( myPrivateKey );
       client.as('public').get('rates', function(err, data) {
         should.not.exist(err);
         client.facade.should.equal('merchant');
@@ -63,7 +65,7 @@ describe('RESTClient', function() {
   describe('#_sendRequest', function() {
 
     it('should sign the request if a secret is given', function(done) {
-      var request = new RESTClient('myprivatekey').get('rates');
+      var request = new RESTClient( myPrivateKey ).get('rates');
       should.exist(request.headers['x-pubkey']);
       should.exist(request.headers['x-signature']);
       done();
