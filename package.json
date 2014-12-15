@@ -22,6 +22,7 @@
     "bitpay": "bin/bitpay.js"
   },
   "scripts": {
+    "coverage": "NODE_ENV=test istanbul cover _mocha",
     "test": "mocha test/* --reporter spec",
     "setup": "node scripts/setup.js",
     "postinstall": "npm run setup"
@@ -52,6 +53,7 @@
     "node": ">=0.8"
   },
   "devDependencies": {
+    "istanbul": "^0.3.5",
     "mocha": "^1.21.4",
     "proxyquire": "^1.0.1",
     "should": "^4.0.4",
