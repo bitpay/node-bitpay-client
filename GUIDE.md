@@ -18,12 +18,12 @@ Now, in your Node application, creating an Invoice is as simple as follows:
 ### Creating An Invoice
 
 ```javascript
-var bitpay  = require('bitpay');
+var BitPay  = require('bitpay');
 var privkey = fs.readFileSync('path/to/private.key');
-var client  = bitpay.createClient( privkey );
+var bitpay  = BitPay.createClient( privkey );
 
-client.on('ready', function() {
-  client.post('invoices', function(err, invoice) {
+bitpay.on('ready', function() {
+  bitpay.post('invoices', function(err, invoice) {
     console.log(err || invoice);
   });
 });
@@ -35,9 +35,20 @@ You will receive either an `err` if any error took place, or an `invoice` if the
 Every Invoice on BitPay has a "refunds" subcollection.  To create a refund request, POST into it:
 
 ```javascript
-client.post('invoices/:invoiceID/:refunds', function(err, refundRequest) {
+bitpay.post('invoices/:invoiceID/:refunds', function(err, refundRequest) {
   
 });
 ```
+
+### Create a Recurring Bill
+```javascript
+bitpay.post('subscriptions', {
+  billData: {/*...*/},// type: Bill.  See the Bill Schema.
+  schedule: 'monthly' // type: enumerable, ['weekly', 'monthly', 'quarterly', 'yearly']
+})
+```
+
+Bill Schema: https://bitpay.com/api#resource-Bills
+
 
 [bitpay registration]: https://bitpay.com/start
