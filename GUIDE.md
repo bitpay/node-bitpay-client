@@ -1,3 +1,6 @@
+title: Node.js Guide
+github: https://github.com/bitpay/node-bitpay-client/edit/master/GUIDE.md
+---
 # Using BitPay with Node.js
 
 ## Prerequisites
