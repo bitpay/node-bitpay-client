@@ -66,7 +66,7 @@ describe('RESTClient', function() {
 
     it('should sign the request if a secret is given', function(done) {
       var request = new RESTClient( myPrivateKey ).get('rates');
-      should.exist(request.headers['x-pubkey']);
+      should.exist(request.headers['x-identity']);
       should.exist(request.headers['x-signature']);
       done();
     });
@@ -93,6 +93,15 @@ describe('RESTClient', function() {
       var request = new RESTClient().delete('rates');
       request.method.should.equal('DELETE');
       done();
+    });
+
+    it('should not include "?" in dataToSign without data', function(done) {
+      var request = new RESTClient();
+      request.facade = 'user';
+      request._sendRequest('GET', 'tokens', function(err, data){
+        request._dataToSign.should.not.match(/\?$/);
+        done();
+      });
     });
 
   });
