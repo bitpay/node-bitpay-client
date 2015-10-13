@@ -21,6 +21,53 @@ need to run the following from the project root:
 ~# npm run setup
 ```
 
+### Pairing
+
+Set up your client's private key:
+
+```
+./node_modules/bitpay/bin/bitpay.js keygen
+< enter a password, or hit enter for no password >
+Generating keys...
+Keys saved to: /Users/<your_username>/.bitpay
+```
+Next you have to pair up your client's private key with your bitpay account. This is done by requesting a pairing code:
+
+```
+./node_modules/bitpay/bin/bitpay.js pair
+Do you have a pairing code?
+no < hit enter twice >
+Okay, we can get a pairing code, please choose a facade:
+  1) Point of Sale // Just want to make invoices
+  2) Merchant      // Want to have full account access
+```
+This will spit out a bunch of output. At the end of it will be a URL:
+```
+Pair this client with your organization:
+https://test.bitpay.com/api-access-request?pairingCode=XXX
+```
+Visit this URL in your browser and hit the approve button. Afterwards, you can test creating a basic invoice from the command line like this:
+
+```
+//If you selected #1 then use this:
+./node_modules/bitpay/bin/bitpay.js request -T pos -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+//If you selected #2 then use this:
+./node_modules/bitpay/bin/bitpay.js request -T merchant -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+```
+If it worked, you'll see some JSON outputted regarding the newly created invoice. If you get an error like this:
+```
+Error: { error: 'Invalid token' }
+```
+Then something is wrong, either you used the wrong line, or you haven't approved the token yet in the bitpay dashboard.
+
+
+For this utility Bitpay's test platform is used by default, so if you want to use the regular production platform (ie. bitpay.com and not test.bitpay.com), do this:
+```
+./node_modules/bitpay/bin/bitpay.js config --use prod
+```
+You'll need to pair again as well to get a new token for the production environment.
+
+
 ## Usage
 
 ### CLI
@@ -63,22 +110,45 @@ For more information on how to use the CLI, run:
 
 ### Module
 
-Require the BitPay API and create a client instance using your private key.
+To use this as a client library you'll actually need both bitpay and bitauth.
 
+```npm install bitpay bitauth```
+
+Here's a basic example for creating an invoice:
 ```js
-var bitpay  = require('bitpay');
-var privkey = fs.readFileSync('path/to/private.key');
-var client  = bitpay.createClient(privkey);
-```
+var bitpay = require('bitpay');
+// need bitauth too
+var bitauth = require('bitauth');
 
-The client will automatically retrieve your access tokens and emit a *ready*
-event when you can start sending requests.
+// NOTE: necessary to decrypt your key even if you didn't enter a password when you generated it.
+// If you did specify a password, pass it as the first param to bitauth.decrypt()
+var privkey = bitauth.decrypt('', fs.readFileSync('/path/to/.bitpay/api.key', 'utf8'));
 
-```js
-client.on('ready', function() {
-    client.get('invoices', function(err, invoices) {
-        console.log(err || invoices);
-    });
+var client = bitpay.createClient(privkey);
+client.on('error', function(err) {
+  // handle client errors here
+  console.log(err);
+});
+
+//Client will take a second to automatically load your tokens, after which it will emit this ready event
+//You must wait for the ready event before issuing requests
+client.on('ready', function(){
+  var data = {
+    price: 1,
+    currency: 'USD'
+  };
+
+  // NOTE: the .as('pos') is necessary for Point of Sale requests, use as('merchant') if you have a merchant token instead
+  client.as('pos').post('invoices', data, function(err, invoice) {
+    if (err){
+      // more error handling
+      console.log(err);
+    }
+    else{
+      // success
+      console.log('invoice data', invoice);
+    }
+  });
 });
 ```
 
@@ -93,6 +163,8 @@ client.get('invoices', function(err, invoices) {
     });
 });
 ```
+
+Arguments for creating invoices can be viewed here: https://bitpay.com/api#resource-Invoices
 
 ### Overloading Configuration
 
