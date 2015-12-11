@@ -11,7 +11,7 @@ A Node.js module and command line client for interacting with
 Install using [Node Package Manager](https://www.npmjs.org/).
 
 ```
-~# npm install bitpay
+~# npm install bitpay-rest
 ```
 
 If you do not use NPM to install (instead cloning this repository), you will
@@ -26,7 +26,7 @@ need to run the following from the project root:
 Set up your client's private key:
 
 ```
-./node_modules/bitpay/bin/bitpay.js keygen
+./node_modules/bitpay-rest/bin/bitpay.js keygen
 < enter a password, or hit enter for no password >
 Generating keys...
 Keys saved to: /Users/<your_username>/.bitpay
@@ -34,7 +34,7 @@ Keys saved to: /Users/<your_username>/.bitpay
 Next you have to pair up your client's private key with your bitpay account. This is done by requesting a pairing code:
 
 ```
-./node_modules/bitpay/bin/bitpay.js pair
+./node_modules/bitpay-rest/bin/bitpay.js pair
 Do you have a pairing code?
 no < hit enter twice >
 Okay, we can get a pairing code, please choose a facade:
@@ -50,9 +50,9 @@ Visit this URL in your browser and hit the approve button. Afterwards, you can t
 
 ```
 //If you selected #1 then use this:
-./node_modules/bitpay/bin/bitpay.js request -T pos -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+./node_modules/bitpay-rest/bin/bitpay.js request -T pos -X post -R invoices -P '{"price": 1, "currency": "USD"}'
 //If you selected #2 then use this:
-./node_modules/bitpay/bin/bitpay.js request -T merchant -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+./node_modules/bitpay-rest/bin/bitpay.js request -T merchant -X post -R invoices -P '{"price": 1, "currency": "USD"}'
 ```
 If it worked, you'll see some JSON outputted regarding the newly created invoice. If you get an error like this:
 ```
@@ -63,7 +63,7 @@ Then something is wrong, either you used the wrong line, or you haven't approved
 
 For this utility Bitpay's test platform is used by default, so if you want to use the regular production platform (ie. bitpay.com and not test.bitpay.com), do this:
 ```
-./node_modules/bitpay/bin/bitpay.js config --use prod
+./node_modules/bitpay-rest/bin/bitpay.js config --use prod
 ```
 You'll need to pair again as well to get a new token for the production environment.
 
@@ -76,7 +76,7 @@ Use the `bitpay` command line program to generate your client keys and
 associate them with your account.
 
 ```
-~# cd bitpay && npm link
+~# cd bitpay-rest && npm link
 ~# bitpay keygen
 ~# bitpay pair
 ```
@@ -112,11 +112,11 @@ For more information on how to use the CLI, run:
 
 To use this as a client library you'll actually need both bitpay and bitauth.
 
-```npm install bitpay bitauth```
+```npm install bitpay-rest bitauth```
 
 Here's a basic example for creating an invoice:
 ```js
-var bitpay = require('bitpay');
+var bitpay = require('bitpay-rest');
 // need bitauth too
 var bitauth = require('bitauth');
 
