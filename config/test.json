@@ -1,5 +1,6 @@
 {
   "apiHost": "test.bitpay.com",
   "apiPort": 443,
-  "forceSSL": true
+  "forceSSL": true,
+  "timeout": 5000
 }
