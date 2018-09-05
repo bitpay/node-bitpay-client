@@ -12,9 +12,9 @@ addons:
     - g++-4.8
     - clang
 node_js:
-  - '0.10'
-  - '0.12'
   - '4'
+  - '7'
+  - '8'
 before_install:
   - export CXX="g++-4.8" CC="gcc-4.8"
 install:
