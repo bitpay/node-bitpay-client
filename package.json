@@ -1,9 +1,40 @@
 {
-  "name": "bitpay-rest",
-  "preferGlobal": false,
-  "version": "0.3.2",
-  "author": "Gordon Hall <gordon@bitpay.com>",
-  "description": "",
+  "_from": "bitpay-rest",
+  "_id": "bitpay-rest@0.3.1",
+  "_inBundle": false,
+  "_integrity": "sha1-N/KKVrNuFw/mRpjB2EmiGn/x2YA=",
+  "_location": "/bitpay-rest",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "bitpay-rest",
+    "name": "bitpay-rest",
+    "escapedName": "bitpay-rest",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/bitpay-rest/-/bitpay-rest-0.3.1.tgz",
+  "_shasum": "37f28a56b36e170fe64698c1d849a21a7ff1d980",
+  "_spec": "bitpay-rest",
+  "_where": "/Users/pieter/dev",
+  "analyze": false,
+  "author": {
+    "name": "Gordon Hall",
+    "email": "gordon@bitpay.com"
+  },
+  "bin": {
+    "bitpay": "bin/bitpay.js"
+  },
+  "bugs": {
+    "url": "https://github.com/bitpay/node-bitpay-client/issues"
+  },
+  "bundleDependencies": false,
   "contributors": [
     {
       "name": "Patrick Nagurny",
@@ -18,44 +49,51 @@
       "email": "rob@bitpay.com"
     }
   ],
-  "bin": {
-    "bitpay": "bin/bitpay.js"
-  },
-  "scripts": {
-    "coverage": "NODE_ENV=test istanbul cover _mocha",
-    "test": "mocha test/* --reporter spec",
-    "setup": "node scripts/setup.js",
-    "postinstall": "npm run setup"
-  },
-  "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/bitpay/node-bitpay-client.git"
-  },
-  "keywords": [
-    "bitpay",
-    "rest",
-    "api"
-  ],
   "dependencies": {
     "async": "^0.7.0",
+    "base58-native": "~0.1.4",
     "bitauth": "^0.3.1",
     "commander": "^1.3.2",
     "extend": "^1.2.1",
     "qs": "^2.2.4",
     "read": "^1.0.5",
-    "request": "~2.87.0"
+    "request": "~2.87.0",
+    "ms": "^2.1.1",
+    "minimatch": "^3.0.4",
+    "debug": "^3.1.0",
+    "growl": "^1.10.5"
   },
-  "analyze": false,
-  "license": "MIT",
-  "engines": {
-    "node": ">=0.8"
-  },
+  "deprecated": false,
+  "description": "BitPay Node.js API Client ========================== [![Build Status](https://travis-ci.org/bitpay/node-bitpay-client.svg)](https://travis-ci.org/bitpay/node-bitpay-client) [![Coverage Status](https://coveralls.io/repos/bitpay/node-bitpay-client/badge.png?branch=master)](https://coveralls.io/r/bitpay/node-bitpay-client?branch=master)",
   "devDependencies": {
-    "istanbul": "^0.3.5",
-    "mocha": "^1.21.4",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
     "proxyquire": "^1.0.1",
     "should": "^4.0.4",
     "sinon": "^1.10.3"
-  }
+  },
+  "engines": {
+    "node": ">=0.8"
+  },
+  "homepage": "https://github.com/bitpay/node-bitpay-client#readme",
+  "keywords": [
+    "bitpay",
+    "rest",
+    "api"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "bitpay-rest",
+  "preferGlobal": false,
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bitpay/node-bitpay-client.git"
+  },
+  "scripts": {
+    "coverage": "NODE_ENV=test istanbul cover _mocha",
+    "postinstall": "npm run setup",
+    "setup": "node scripts/setup.js",
+    "test": "mocha test/* --reporter spec"
+  },
+  "version": "0.3.1"
 }
