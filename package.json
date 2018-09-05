@@ -1,7 +1,7 @@
 {
-  "name": "bitpay-rest",
+  "name": "bitpay-rest-mod",
   "preferGlobal": false,
-  "version": "0.3.1",
+  "version": "0.3.4",
   "author": "Gordon Hall <gordon@bitpay.com>",
   "description": "",
   "contributors": [
@@ -44,7 +44,7 @@
     "extend": "^1.2.1",
     "qs": "^2.2.4",
     "read": "^1.0.5",
-    "request": "^2.34.0"
+    "request": "2.87.0"
   },
   "analyze": false,
   "license": "MIT",
