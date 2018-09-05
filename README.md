@@ -19,6 +19,7 @@ need to run the following from the project root:
 
 ```
 ~# npm run setup
+~# npm install
 ```
 
 ### Pairing
