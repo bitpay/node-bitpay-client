@@ -67,7 +67,7 @@
   "description": "BitPay Node.js API Client ========================== [![Build Status](https://travis-ci.org/bitpay/node-bitpay-client.svg)](https://travis-ci.org/bitpay/node-bitpay-client) [![Coverage Status](https://coveralls.io/repos/bitpay/node-bitpay-client/badge.png?branch=master)](https://coveralls.io/r/bitpay/node-bitpay-client?branch=master)",
   "devDependencies": {
     "istanbul": "^0.4.5",
-    "mocha": "^5.2.0",
+    "mocha": "^4.0.0",
     "proxyquire": "^1.0.1",
     "should": "^4.0.4",
     "sinon": "^1.10.3"
