@@ -27,7 +27,7 @@ need to run the following from the project root:
 Set up your client's private key:
 
 ```
-./node_modules/bitpay-rest/bin/bitpay.js keygen
+./bin/bitpay.js keygen
 < enter a password, or hit enter for no password >
 Generating keys...
 Keys saved to: /Users/<your_username>/.bitpay
@@ -49,11 +49,12 @@ https://test.bitpay.com/api-access-request?pairingCode=XXX
 ```
 Visit this URL in your browser and hit the approve button. Afterwards, you can test creating a basic invoice from the command line like this:
 
-```
-//If you selected #1 then use this:
-./node_modules/bitpay-rest/bin/bitpay.js request -T pos -X post -R invoices -P '{"price": 1, "currency": "USD"}'
-//If you selected #2 then use this:
-./node_modules/bitpay-rest/bin/bitpay.js request -T merchant -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+```javascript
+// If you selected #1 then use this:
+./bin/bitpay.js request -T pos -X post -R invoices -P '{"price": 1, "currency": "USD"}'
+
+// If you selected #2 then use this:
+./bin/bitpay.js request -T merchant -X post -R invoices -P '{"price": 1, "currency": "USD"}'
 ```
 If it worked, you'll see some JSON outputted regarding the newly created invoice. If you get an error like this:
 ```
@@ -64,7 +65,7 @@ Then something is wrong, either you used the wrong line, or you haven't approved
 
 For this utility Bitpay's test platform is used by default, so if you want to use the regular production platform (ie. bitpay.com and not test.bitpay.com), do this:
 ```
-./node_modules/bitpay-rest/bin/bitpay.js config --use prod
+./bin/bitpay.js config --use prod
 ```
 You'll need to pair again as well to get a new token for the production environment.
 
