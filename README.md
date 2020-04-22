@@ -120,6 +120,7 @@ Here's a basic example for creating an invoice:
 var bitpay = require('bitpay-rest');
 // need bitauth too
 var bitauth = require('bitauth');
+var fs  = require('fs');
 
 // NOTE: necessary to decrypt your key even if you didn't enter a password when you generated it.
 // If you did specify a password, pass it as the first param to bitauth.decrypt()
